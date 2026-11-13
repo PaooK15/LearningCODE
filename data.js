@@ -30,12 +30,12 @@ Bằng cách thêm dòng lệnh thần chú:
   cin.tie(NULL);
 chúng ta ngắt kết nối đồng bộ và giải phóng bộ đệm (buffer), giúp cin/cout nhanh ngang ngửa 'scanf/printf'.
 Đối với rẽ nhánh (if/else/switch), nguyên tắc sư phạm cốt lõi là: Luôn kiểm tra điều kiện loại trừ sớm (Early Return) để giảm độ sâu lồng nhau của code, tránh lỗi 'Dangling Else' và xử lý cẩn thận các trường hợp biên như số 0, số âm và số vượt giới hạn int32.`,
-        timeComplexity: "O(1) cho mỗi phép kiểm tra điều kiện; O(N) cho I/O N phần tử với buffer tối ưu.",
-        spaceComplexity: "O(1) bộ nhớ phụ trợ.",
+        timeComplexity: "$\\mathcal{O}(1)$ cho mỗi phép kiểm tra điều kiện; $\\mathcal{O}(N)$ cho I/O $N$ phần tử với buffer tối ưu.",
+        spaceComplexity: "$\\mathcal{O}(1)$ bộ nhớ phụ trợ.",
         pitfalls: [
           "Dùng 'std::endl' thay vì '\\n': 'endl' ép xả bộ đệm (flush buffer) liên tục khiến chương trình bị Time Limit Exceeded (TLE).",
           "So sánh số thực: Không bao giờ dùng 'a == b' với float/double; phải dùng 'fabs(a - b) < 1e-9'.",
-          "Tràn số nguyên (Integer Overflow): Với giá trị > 2*10^9, bắt buộc dùng 'long long' (64-bit int)."
+          "Tràn số nguyên (Integer Overflow): Với giá trị $> 2 \\times 10^9$, bắt buộc dùng 'long long' (64-bit int)."
         ],
         cppTemplate: `#include <iostream>
 #include <iomanip>
@@ -82,8 +82,8 @@ int main() {
 - 'for': Sử dụng khi biết trước số bước lặp (hoặc duyệt theo khoảng xác định).
 - 'while': Sử dụng khi số bước phụ thuộc vào một điều kiện trạng thái (chẳng hạn thuật toán Euclid tìm GCD, biến đổi số học cho đến khi n = 0).
 - Kỹ thuật vòng lặp lồng nhau (Nested loops): Cho phép duyệt qua không gian 2 chiều (bảng ô vuông, ma trận) hoặc sinh các cặp (i, j). Tuy nhiên số vòng lặp lồng nhau quyết định bậc đa thức độ phức tạp: 1 vòng là O(N), 2 vòng là O(N^2), 3 vòng là O(N^3).`,
-        timeComplexity: "O(N) cho 1 vòng lặp; O(N * M) cho 2 vòng lặp lồng nhau.",
-        spaceComplexity: "O(1) biến đếm.",
+        timeComplexity: "$\\mathcal{O}(N)$ cho 1 vòng lặp; $\\mathcal{O}(N \\times M)$ cho 2 vòng lặp lồng nhau.",
+        spaceComplexity: "$\\mathcal{O}(1)$ biến đếm.",
         pitfalls: [
           "Điều kiện dừng sai trong while gây vòng lặp vô hạn (Infinite Loop -> TLE).",
           "Biến đếm bị thay đổi ngoài ý muốn bên trong thân vòng lặp.",
@@ -418,17 +418,17 @@ int main() {
         title: "Mảng Cộng Dồn 1D & 2D (Prefix Sums)",
         category: "Tiền xử lý & Mảng",
         difficulty: 2,
-        shortDesc: "Trả lời truy vấn tổng đoạn [L, R] hoặc hình chữ nhật 2D trong O(1).",
-        intuition: `Giả sử có Q = 10^5 truy vấn tính tổng các phần tử từ chỉ số L đến R. Nếu mỗi lần tính ta dùng vòng lặp for từ L đến R, tổng thời gian sẽ là O(Q * N) ~ 10^10 phép tính -> TLE nặng nề!
+        shortDesc: "Trả lời truy vấn tổng đoạn $[L, R]$ hoặc hình chữ nhật 2D trong $\\mathcal{O}(1)$.",
+        intuition: `Giả sử có $Q = 10^5$ truy vấn tính tổng các phần tử từ chỉ số $L$ đến $R$. Nếu mỗi lần tính ta dùng vòng lặp for từ $L$ đến $R$, tổng thời gian sẽ là $\\mathcal{O}(Q \\times N) \\approx 10^{10}$ phép tính $\\to$ TLE nặng nề!
 Giải pháp thần kỳ: Tiền xử lý mảng cộng dồn:
-  pref[i] = pref[i - 1] + a[i]  (với pref[0] = 0)
-Khi đó tổng đoạn [L, R] được tính ngay lập tức:
-  Sum(L, R) = pref[R] - pref[L - 1] trong O(1)!
+  $\\text{pref}[i] = \\text{pref}[i - 1] + a[i]$ (với $\\text{pref}[0] = 0$)
+Khi đó tổng đoạn $[L, R]$ được tính ngay lập tức:
+  $\\text{Sum}(L, R) = \\text{pref}[R] - \\text{pref}[L - 1]$ trong $\\mathcal{O}(1)$!
 Mở rộng lên 2D: Sử dụng nguyên lý Bao hàm - Loại trừ (Inclusion-Exclusion Principle):
-  pref[r][c] = a[r][c] + pref[r-1][c] + pref[r][c-1] - pref[r-1][c-1]
-  Sum(r1, c1, r2, c2) = pref[r2][c2] - pref[r1-1][c2] - pref[r2][c1-1] + pref[r1-1][c1-1].`,
-        timeComplexity: "O(N) tiền xử lý 1D, O(N*M) tiền xử lý 2D. O(1) cho mỗi truy vấn.",
-        spaceComplexity: "O(N) cho mảng 1D, O(N*M) cho ma trận 2D.",
+  $\\text{pref}[r][c] = a[r][c] + \\text{pref}[r-1][c] + \\text{pref}[r][c-1] - \\text{pref}[r-1][c-1]$
+  $\\text{Sum}(r_1, c_1, r_2, c_2) = \\text{pref}[r_2][c_2] - \\text{pref}[r_1-1][c_2] - \\text{pref}[r_2][c_1-1] + \\text{pref}[r_1-1][c_1-1]$.`,
+        timeComplexity: "$\\mathcal{O}(N)$ tiền xử lý 1D, $\\mathcal{O}(N \\times M)$ tiền xử lý 2D; $\\mathcal{O}(1)$ cho mỗi truy vấn.",
+        spaceComplexity: "$\\mathcal{O}(N)$ cho mảng 1D, $\\mathcal{O}(N \\times M)$ cho ma trận 2D.",
         pitfalls: [
           "Nên đánh chỉ số 1-indexed (từ 1 đến N) thay vì 0-indexed để 'pref[0] = 0' tự nhiên, không cần viết 'if (L == 0)' tránh lỗi chỉ số âm.",
           "Tổng các phần tử có thể vượt quá giới hạn kiểu int 32-bit (2*10^9), mảng 'pref' bắt buộc phải là kiểu 'long long'."
@@ -606,14 +606,14 @@ int main() {
         title: "Tìm Kiếm Nhị Phân & STL lower_bound / upper_bound",
         category: "Tìm kiếm",
         difficulty: 3,
-        shortDesc: "Thu hẹp không gian tìm kiếm một nửa sau mỗi bước trên mảng đã sắp xếp.",
-        intuition: `Mỗi lần kiểm tra phần tử chính giữa (mid), ta loại bỏ được một nửa số phần tử còn lại. Với mảng 10^9 phần tử, ta chỉ cần tối đa khoảng log2(10^9) ≈ 30 phép so sánh để tìm thấy đáp án!
+        shortDesc: "Thu hẹp không gian tìm kiếm một nửa sau mỗi bước trên mảng đã sắp xếp trong $\\mathcal{O}(\\log N)$.",
+        intuition: `Mỗi lần kiểm tra phần tử chính giữa (mid), ta loại bỏ được một nửa số phần tử còn lại. Với mảng $10^9$ phần tử, ta chỉ cần tối đa khoảng $\\approx \\log_2(10^9) \\approx 30$ phép so sánh để tìm thấy đáp án!
 Trong C++ STL:
-- 'lower_bound(first, last, val)': Trả về con trỏ/iterator tới phần tử đầu tiên >= val.
-- 'upper_bound(first, last, val)': Trả về con trỏ/iterator tới phần tử đầu tiên > val.
-- Số lần xuất hiện của 'val' trong mảng đã sắp xếp chính là: upper_bound - lower_bound!`,
-        timeComplexity: "O(log N) cho mỗi thao tác tìm kiếm trên mảng kích thước N.",
-        spaceComplexity: "O(1) biến con trỏ l, r, mid.",
+- 'lower_bound(first, last, val)': Trả về con trỏ/iterator tới phần tử đầu tiên $\\ge val$.
+- 'upper_bound(first, last, val)': Trả về con trỏ/iterator tới phần tử đầu tiên $> val$.
+- Số lần xuất hiện của 'val' trong mảng đã sắp xếp chính là: $\\text{upper\\_bound} - \\text{lower\\_bound}$!`,
+        timeComplexity: "$\\mathcal{O}(\\log N)$ cho mỗi thao tác tìm kiếm trên mảng kích thước $N$.",
+        spaceComplexity: "$\\mathcal{O}(1)$ biến con trỏ $L, R, mid$.",
         pitfalls: [
           "Tràn số nguyên khi tính mid: 'int mid = (l + r) / 2' có thể tràn int nếu l + r > 2*10^9. Cách viết chuẩn ICPC: 'int mid = l + (r - l) / 2'.",
           "Vòng lặp vô hạn do cập nhật biên sai: Cẩn thận với 'l = mid' hoặc 'r = mid'. Luôn xác định rõ điều kiện dừng l <= r hay l < r.",
@@ -1142,7 +1142,7 @@ int main() {
         title: "Tập Hợp Rời Nhau DSU (Disjoint Set Union)",
         category: "Cấu trúc dữ liệu",
         difficulty: 3,
-        shortDesc: "Quản lý các tập hợp rời nhau với thao tác Hợp nhất (Union) và Tìm đại diện (Find) gần như O(1).",
+        shortDesc: "Quản lý các tập hợp rời nhau với thao tác Hợp nhất (Union) và Tìm đại diện (Find) gần như $\\mathcal{O}(1)$.",
         intuition: `DSU quản lý một tập hợp các phần tử được chia thành các nhóm không giao nhau.
 Hai thao tác cốt lõi:
 1. 'find(u)': Tìm gốc đại diện cho tập hợp chứa u.
@@ -1150,9 +1150,9 @@ Hai thao tác cốt lõi:
 Hai kỹ thuật tối ưu hóa thần thánh giúp DSU đạt tốc độ gần như tức thời:
 - Nén đường đi (Path Compression): Khi tìm gốc của u, gán trực tiếp cha của u trỏ thẳng về gốc tối cao.
 - Hợp nhất theo kích thước/hạng (Union by Rank/Size): Luôn nối cây có kích thước nhỏ hơn vào gốc của cây có kích thước lớn hơn.
-Kết hợp cả hai kỹ thuật đưa độ phức tạp về O(alpha(N)) mỗi thao tác (với alpha là hàm ngược Ackermann, trong thực tế alpha(10^18) <= 4, coi như hằng số O(1))!`,
-        timeComplexity: "O(alpha(N)) xấp xỉ O(1) cho mỗi thao tác find/unite.",
-        spaceComplexity: "O(N) lưu mảng parent[] và sz[].",
+Kết hợp cả hai kỹ thuật đưa độ phức tạp về $\\mathcal{O}(\\alpha(N))$ mỗi thao tác (với $\\alpha$ là hàm ngược Ackermann, trong thực tế $\\alpha(10^{18}) \\le 4$, coi như hằng số $\\mathcal{O}(1)$)!`,
+        timeComplexity: "$\\mathcal{O}(\\alpha(N)) \\approx \\mathcal{O}(1)$ cho mỗi thao tác find/unite.",
+        spaceComplexity: "$\\mathcal{O}(N)$ lưu mảng parent[] và sz[].",
         pitfalls: [
           "Quên nén đường đi trong hàm find: 'return parent[u] = find(parent[u])' thay vì 'return find(parent[u])'. Quên điều này sẽ khiến độ phức tạp thoái hóa về O(N).",
           "Gọi unite(u, v) mà không kiểm tra xem u và v đã cùng một gốc hay chưa."
@@ -1558,17 +1558,17 @@ int main() {
         title: "Cây Phân Đoạn (Segment Tree - Point Update, Range Query)",
         category: "Cấu trúc dữ liệu cây",
         difficulty: 4,
-        shortDesc: "Cấu trúc dữ liệu tối thượng cho phép cập nhật 1 phần tử và truy vấn đoạn [L, R] trong O(log N).",
-        intuition: `Segment Tree là một cây nhị phân đầy đủ mà mỗi nút đại diện cho một đoạn con [L, R] của mảng:
-- Nút gốc đại diện cho cả mảng [1, N].
-- Nút con trái đại diện cho nửa đầu [L, Mid].
-- Nút con phải đại diện cho nửa sau [Mid + 1, R].
-- Các nút lá đại diện cho các phần tử đơn lẻ [i, i].
-Khi cần tính tổng, min, max, hoặc gcd trên đoạn [u, v], ta chỉ cần ghé thăm tối đa 4 nút ở mỗi tầng của cây, do đó chỉ mất O(log N) thời gian!
-Cập nhật một phần tử cũng chỉ đi theo một nhánh từ lá lên gốc, tốn đúng O(log N).
+        shortDesc: "Cấu trúc dữ liệu tối thượng cho phép cập nhật 1 phần tử và truy vấn đoạn $[L, R]$ trong $\\mathcal{O}(\\log N)$.",
+        intuition: `Segment Tree là một cây nhị phân đầy đủ mà mỗi nút đại diện cho một đoạn con $[L, R]$ của mảng:
+- Nút gốc đại diện cho cả mảng $[1, N]$.
+- Nút con trái đại diện cho nửa đầu $[L, \\text{Mid}]$.
+- Nút con phải đại diện cho nửa sau $[\\text{Mid} + 1, R]$.
+- Các nút lá đại diện cho các phần tử đơn lẻ $[i, i]$.
+Khi cần tính tổng, min, max, hoặc gcd trên đoạn $[u, v]$, ta chỉ cần ghé thăm tối đa $4$ nút ở mỗi tầng của cây, do đó chỉ mất $\\mathcal{O}(\\log N)$ thời gian!
+Cập nhật một phần tử cũng chỉ đi theo một nhánh từ lá lên gốc, tốn đúng $\\mathcal{O}(\\log N)$.
 Quy ước kích thước mảng cây: Kích thước mảng phẳng 'tree[4 * N]' để đảm bảo không bao giờ tràn bộ nhớ.`,
-        timeComplexity: "O(N) dựng cây ban đầu; O(log N) cho mỗi thao tác Update hoặc Query.",
-        spaceComplexity: "O(4 * N) bộ nhớ mảng phẳng.",
+        timeComplexity: "$\\mathcal{O}(N)$ dựng cây ban đầu; $\\mathcal{O}(\\log N)$ cho mỗi thao tác Update hoặc Query.",
+        spaceComplexity: "$\\mathcal{O}(4N)$ bộ nhớ mảng phẳng.",
         pitfalls: [
           "Khai báo kích thước mảng cây nhỏ hơn 4 * N dẫn đến lỗi Runtime Error (Out of Bounds).",
           "Thao tác kết hợp (Merge function) không có tính kết hợp (Associativity).",
@@ -2558,18 +2558,18 @@ int main() {
         title: "Biến Đổi Fourier Nhanh & Nhân Đa Thức (FFT / NTT)",
         category: "Toán học & Đa thức",
         difficulty: 5,
-        shortDesc: "Nhân hai đa thức bậc N trong O(N log N) thay vì O(N^2) bằng giải thuật Cooley-Tukey.",
-        intuition: `Nhân hai đa thức P(x) và Q(x) bậc N theo cách đặt tính thông thường tốn O(N^2) phép tính.
+        shortDesc: "Nhân hai đa thức bậc $N$ trong $\\mathcal{O}(N \\log N)$ thay vì $\\mathcal{O}(N^2)$ bằng giải thuật Cooley-Tukey.",
+        intuition: `Nhân hai đa thức $P(x)$ và $Q(x)$ bậc $N$ theo cách đặt tính thông thường tốn $\\mathcal{O}(N^2)$ phép tính.
 Ý tưởng thiên tài của FFT (Fast Fourier Transform):
-Một đa thức bậc N được xác định DUY NHẤT bởi N + 1 điểm giá trị (Point-Value Representation).
-Nhân hai đa thức ở dạng điểm giá trị chỉ mất đúng O(N) (nhân từng cặp tọa độ)!
+Một đa thức bậc $N$ được xác định DUY NHẤT bởi $N + 1$ điểm giá trị (Point-Value Representation).
+Nhân hai đa thức ở dạng điểm giá trị chỉ mất đúng $\\mathcal{O}(N)$ (nhân từng cặp tọa độ)!
 Thuật toán FFT chuyển đổi giữa hai biểu diễn:
-1. Chuyển từ hệ số sang điểm giá trị bằng FFT tại các nghiệm căn nguyên thủy của đơn vị (Roots of Unity) trong O(N log N).
-2. Nhân từng cặp điểm trong O(N).
-3. Biến đổi ngược (Inverse FFT) từ điểm trở về hệ số trong O(N log N)!
-NTT (Number Theoretic Transform): Phiên bản FFT trên trường hữu hạn Modulo nguyên tố (ví dụ 998244353) hoàn toàn chính xác với số nguyên, không lo sai số dấu phẩy động!`,
-        timeComplexity: "O(N log N) nhân hai đa thức.",
-        spaceComplexity: "O(N) mảng số phức hoặc mảng modulo.",
+1. Chuyển từ hệ số sang điểm giá trị bằng FFT tại các nghiệm căn nguyên thủy của đơn vị (Roots of Unity: $\\omega_N^k = e^{i \\frac{2\\pi k}{N}}$) trong $\\mathcal{O}(N \\log N)$.
+2. Nhân từng cặp điểm trong $\\mathcal{O}(N)$.
+3. Biến đổi ngược (Inverse FFT) từ điểm trở về hệ số trong $\\mathcal{O}(N \\log N)$!
+NTT (Number Theoretic Transform): Phiên bản FFT trên trường hữu hạn Modulo nguyên tố (ví dụ $998244353 = 119 \\times 2^{23} + 1$) hoàn toàn chính xác với số nguyên, không lo sai số dấu phẩy động!`,
+        timeComplexity: "$\\mathcal{O}(N \\log N)$ nhân hai đa thức.",
+        spaceComplexity: "$\\mathcal{O}(N)$ mảng số phức hoặc mảng modulo.",
         pitfalls: [
           "Sai số làm tròn số thực trong FFT: Cần dùng 'double' hoặc 'long double' và ép kiểu làm tròn cẩn thận: '(long long)(round(res.real()))'.",
           "NTT chỉ áp dụng được với Modulo có dạng 'c * 2^k + 1' (như 998244353 có 2^23)."
@@ -2802,14 +2802,14 @@ for ($i = 1; $i -le 1000; $i++) {
   }
 ];
 
-// Dữ liệu bảng quy tắc vàng ước lượng độ phức tạp thời gian theo N trong ICPC
+// Dữ liệu bảng quy tắc vàng ước lượng độ phức tạp thời gian theo N trong ICPC (Chuẩn LaTeX KaTeX)
 const ICPC_COMPLEXITY_RULES = [
-  { nLimit: "N ≤ 10 - 11", complexity: "O(N!) hoặc O(N² · 2^N)", algorithms: "Vét cạn hoán vị, Bitmask DP cực nhỏ" },
-  { nLimit: "N ≤ 18 - 22", complexity: "O(2^N) hoặc O(N · 2^N)", algorithms: "Quay lui, Bitmask DP (TSP), Meet-in-the-Middle" },
-  { nLimit: "N ≤ 100", complexity: "O(N⁴)", algorithms: "Quy hoạch động 4 chiều, Vét 4 vòng lặp" },
-  { nLimit: "N ≤ 400 - 500", complexity: "O(N³)", algorithms: "Floyd-Warshall, Nhân ma trận O(N³), DP 3 chiều" },
-  { nLimit: "N ≤ 2,000 - 5,000", complexity: "O(N²)", algorithms: "DP bảng 2 chiều, Duyệt 2 con trỏ thô, Cặp ghép Kuhn" },
-  { nLimit: "N ≤ 100,000 - 200,000", complexity: "O(N log N) hoặc O(N log² N)", algorithms: "Sắp xếp, Segment Tree, Binary Search, Dijkstra, HLD" },
-  { nLimit: "N ≤ 1,000,000", complexity: "O(N)", algorithms: "Mảng cộng dồn, Two Pointers, Sàng nguyên tố, BFS/DFS" },
-  { nLimit: "N ≥ 10⁹", complexity: "O(log N) hoặc O(1)", algorithms: "Lũy thừa nhị phân, Công thức tổ hợp, Nhân ma trận nhanh" }
+  { nLimit: "$N \\le 10 - 11$", complexity: "$\\mathcal{O}(N!)$ hoặc $\\mathcal{O}(N^2 \\cdot 2^N)$", algorithms: "Vét cạn hoán vị, Bitmask DP cực nhỏ" },
+  { nLimit: "$N \\le 18 - 22$", complexity: "$\\mathcal{O}(2^N)$ hoặc $\\mathcal{O}(N \\cdot 2^N)$", algorithms: "Quay lui, Bitmask DP (TSP), Meet-in-the-Middle" },
+  { nLimit: "$N \\le 100$", complexity: "$\\mathcal{O}(N^4)$", algorithms: "Quy hoạch động 4 chiều, Vét 4 vòng lặp" },
+  { nLimit: "$N \\le 400 - 500$", complexity: "$\\mathcal{O}(N^3)$", algorithms: "Floyd-Warshall, Nhân ma trận $\\mathcal{O}(N^3)$, DP 3 chiều" },
+  { nLimit: "$N \\le 2,000 - 5,000$", complexity: "$\\mathcal{O}(N^2)$", algorithms: "DP bảng 2 chiều, Duyệt 2 con trỏ thô, Cặp ghép Kuhn" },
+  { nLimit: "$N \\le 100,000 - 200,000$", complexity: "$\\mathcal{O}(N \\log N)$ hoặc $\\mathcal{O}(N \\log^2 N)$", algorithms: "Sắp xếp, Segment Tree, Binary Search, Dijkstra, HLD" },
+  { nLimit: "$N \\le 1,000,000$", complexity: "$\\mathcal{O}(N)$", algorithms: "Mảng cộng dồn, Two Pointers, Sàng nguyên tố, BFS/DFS" },
+  { nLimit: "$N \\ge 10^9$", complexity: "$\\mathcal{O}(\\log N)$ hoặc $\\mathcal{O}(1)$", algorithms: "Lũy thừa nhị phân, Công thức tổ hợp, Nhân ma trận nhanh" }
 ];

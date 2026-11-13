@@ -17,6 +17,36 @@ const AppState = {
   progress: JSON.parse(localStorage.getItem("marisa_cp_progress") || "{}")
 };
 
+/**
+ * Hàm tích hợp KaTeX tự động render công thức toán học và độ phức tạp
+ */
+function renderMath(container = document.body) {
+  if (!container) return;
+  if (typeof renderMathInElement === "function") {
+    try {
+      renderMathInElement(container, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "$", right: "$", display: false },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false,
+        ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code"]
+      });
+    } catch (err) {
+      console.warn("KaTeX render notice:", err);
+    }
+  } else {
+    // Retry nhẹ trong trường hợp KaTeX script đang tải bất đồng bộ (defer)
+    setTimeout(() => {
+      if (typeof renderMathInElement === "function") {
+        renderMath(container);
+      }
+    }, 300);
+  }
+}
+
 // Khởi chạy khi DOM sẵn sàng
 document.addEventListener("DOMContentLoaded", () => {
   renderRoadmapTree();
@@ -28,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Khởi tạo Study Planner mặc định và gán sự kiện lắng nghe tự động cập nhật
   initStudyPlannerListeners();
   generateStudyPlan();
+  renderMath(document.body);
 });
 
 function initStudyPlannerListeners() {
@@ -101,8 +132,9 @@ function renderRoadmapTree() {
         t.shortDesc.toLowerCase().includes(query) ||
         t.intuition.toLowerCase().includes(query)
       );
-      if (displayedTopics.length === 0) displayedTopics = level.topics;
     }
+
+    if (displayedTopics.length === 0) return; // Bỏ qua level không có chủ đề khớp trong kết quả tìm kiếm
 
     html += `
       <div class="level-block ${isBoss ? 'boss-level' : ''}" id="${level.id}">
@@ -192,6 +224,7 @@ function renderRoadmapTree() {
   });
 
   treeContainer.innerHTML = html;
+  renderMath(treeContainer);
 }
 
 /* ==========================================================================
@@ -253,18 +286,18 @@ function toggleTopicCompletion(topicId, event) {
 }
 
 function updateProgressStats() {
-  let totalTopics = 0;
-  let completedCount = 0;
+  let globalTotal = 0;
+  let globalCompleted = 0;
   const levelStats = [];
 
   MARISA_ROADMAP_DATA.forEach(lvl => {
     let lvlTotal = lvl.topics.length;
     let lvlDone = 0;
-    totalTopics += lvlTotal;
+    globalTotal += lvlTotal;
 
     lvl.topics.forEach(t => {
       if (AppState.progress[t.id] === "completed") {
-        completedCount++;
+        globalCompleted++;
         lvlDone++;
       }
     });
@@ -279,51 +312,108 @@ function updateProgressStats() {
     });
   });
 
-  const percent = totalTopics > 0 ? Math.round((completedCount / totalTopics) * 100) : 0;
+  const globalPercent = globalTotal > 0 ? Math.round((globalCompleted / globalTotal) * 100) : 0;
 
-  // 1. Cập nhật thanh header
+  // 1. Cập nhật thanh header và hero stat luôn phản ánh toàn khóa
   const progressPill = document.getElementById("header-progress-text");
   if (progressPill) {
-    progressPill.innerText = `${completedCount}/${totalTopics} chuyên đề (${percent}%)`;
+    progressPill.innerText = `${globalCompleted}/${globalTotal} chuyên đề (${globalPercent}%)`;
   }
 
-  // 2. Cập nhật hero stat
   const statProgress = document.getElementById("stat-hero-progress");
   if (statProgress) {
-    statProgress.innerText = `${percent}%`;
+    statProgress.innerText = `${globalPercent}%`;
   }
 
-  // 3. Cập nhật Progress Bar lớn
+  // 2. Tính toán tiến độ trong phạm vi lọc/tìm kiếm hiện tại (Contextual Filter / Search Scope)
+  const isLevelFiltered = (AppState.currentLevelFilter !== "all");
+  const isSearchActive = (AppState.searchQuery.trim() !== "");
+  const isFiltered = (isLevelFiltered || isSearchActive);
+
+  let scopedTopics = [];
+  MARISA_ROADMAP_DATA.forEach(lvl => {
+    if (isLevelFiltered && lvl.id !== AppState.currentLevelFilter) return;
+    lvl.topics.forEach(t => {
+      if (isSearchActive) {
+        const q = AppState.searchQuery.toLowerCase();
+        const match = t.title.toLowerCase().includes(q) ||
+                      t.category.toLowerCase().includes(q) ||
+                      t.shortDesc.toLowerCase().includes(q) ||
+                      t.intuition.toLowerCase().includes(q);
+        if (!match) return;
+      }
+      scopedTopics.push(t);
+    });
+  });
+
+  const scopeTotal = scopedTopics.length;
+  const scopeCompleted = scopedTopics.filter(t => AppState.progress[t.id] === "completed").length;
+  const scopePercent = scopeTotal > 0 ? Math.round((scopeCompleted / scopeTotal) * 100) : 0;
+
+  // 3. Cập nhật thanh Progress Bar lớn và nhãn trạng thái động
   const progressBarFill = document.getElementById("progress-bar-fill");
-  if (progressBarFill) {
-    progressBarFill.style.width = `${percent}%`;
-  }
-
   const progressBarCount = document.getElementById("progress-bar-count");
-  if (progressBarCount) {
-    progressBarCount.innerText = `${completedCount} / ${totalTopics} chuyên đề hoàn thành (${percent}%)`;
-  }
-
-  // 4. Cập nhật nhãn trạng thái động
   const badge = document.getElementById("progress-status-badge");
-  if (badge) {
-    if (percent === 0) badge.innerText = "Chưa bắt đầu";
-    else if (percent <= 25) badge.innerText = "Đang khởi động";
-    else if (percent <= 55) badge.innerText = "Tăng tốc kiến thức";
-    else if (percent <= 85) badge.innerText = "Bứt phá nâng cao";
-    else if (percent < 100) badge.innerText = "Sắp về đích!";
-    else badge.innerText = "🏆 Đạt chuẩn ICPC!";
+
+  if (isFiltered) {
+    // Khi đang áp dụng bộ lọc hoặc tìm kiếm
+    let filterLabels = [];
+    if (isLevelFiltered) {
+      const lvlObj = MARISA_ROADMAP_DATA.find(l => l.id === AppState.currentLevelFilter);
+      filterLabels.push(lvlObj ? lvlObj.title.split(":")[0] : AppState.currentLevelFilter);
+    }
+    if (isSearchActive) {
+      filterLabels.push(`"${AppState.searchQuery}"`);
+    }
+
+    if (progressBarFill) {
+      progressBarFill.style.width = `${scopePercent}%`;
+    }
+    if (progressBarCount) {
+      progressBarCount.innerHTML = `
+        Đang lọc (${filterLabels.join(" + ")}): <strong>${scopeCompleted} / ${scopeTotal}</strong> chuyên đề (${scopePercent}%)
+        <span style="font-size:0.82rem; color:#5B6E87; font-weight:normal; margin-left:8px;">
+          • Toàn khóa: ${globalCompleted}/${globalTotal} (${globalPercent}%)
+        </span>
+      `;
+    }
+    if (badge) {
+      badge.innerText = `Bộ lọc: ${scopePercent}%`;
+      badge.style.backgroundColor = "#DBEAFE";
+      badge.style.color = "#1F3F73";
+    }
+  } else {
+    // Khi xem toàn bộ lộ trình
+    if (progressBarFill) {
+      progressBarFill.style.width = `${globalPercent}%`;
+    }
+    if (progressBarCount) {
+      progressBarCount.innerText = `${globalCompleted} / ${globalTotal} chuyên đề hoàn thành (${globalPercent}%)`;
+    }
+    if (badge) {
+      badge.style.backgroundColor = "";
+      badge.style.color = "";
+      if (globalPercent === 0) badge.innerText = "Chưa bắt đầu";
+      else if (globalPercent <= 25) badge.innerText = "Đang khởi động";
+      else if (globalPercent <= 55) badge.innerText = "Tăng tốc kiến thức";
+      else if (globalPercent <= 85) badge.innerText = "Bứt phá nâng cao";
+      else if (globalPercent < 100) badge.innerText = "Sắp về đích!";
+      else badge.innerText = "🏆 Đạt chuẩn ICPC!";
+    }
   }
 
-  // 5. Cập nhật các viên thuốc thống kê từng Level
+  // 4. Cập nhật các viên thuốc thống kê từng Level kèm highlight chip đang chọn
   const grid = document.getElementById("level-progress-grid");
   if (grid) {
-    grid.innerHTML = levelStats.map(ls => `
-      <a href="#${ls.id}" class="level-prog-pill ${ls.isAllDone ? 'completed' : ''}" title="Bấm để cuộn tới ${ls.title}">
-        <span class="prog-dot"></span>
-        <span>L${ls.number}: <strong>${ls.done}/${ls.total}</strong></span>
-      </a>
-    `).join("");
+    grid.innerHTML = levelStats.map(ls => {
+      const isCurrentFilter = (ls.id === AppState.currentLevelFilter);
+      return `
+        <a href="#${ls.id}" class="level-prog-pill ${ls.isAllDone ? 'completed' : ''} ${isCurrentFilter ? 'active-level-chip' : ''}" title="Bấm để cuộn tới ${ls.title}">
+          <span class="prog-dot"></span>
+          <span>L${ls.number}: <strong>${ls.done}/${ls.total}</strong></span>
+        </a>
+      `;
+    }).join("");
   }
 }
 
@@ -569,6 +659,7 @@ function generateStudyPlan() {
   `;
 
   resultContainer.innerHTML = html;
+  renderMath(resultContainer);
 }
 
 function printStudyPlan() {
@@ -589,6 +680,7 @@ function renderCheatsheet() {
       <td>${rule.algorithms}</td>
     </tr>
   `).join("");
+  renderMath(tbody);
 }
 
 /* ==========================================================================
@@ -600,6 +692,7 @@ function initSearchAndFilters() {
     searchInput.addEventListener("input", (e) => {
       AppState.searchQuery = e.target.value;
       renderRoadmapTree();
+      updateProgressStats();
     });
   }
 
@@ -610,6 +703,7 @@ function initSearchAndFilters() {
       chip.classList.add("active");
       AppState.currentLevelFilter = chip.getAttribute("data-level") || "all";
       renderRoadmapTree();
+      updateProgressStats();
     });
   });
 }
@@ -625,6 +719,7 @@ function resetSearch() {
     else c.classList.remove("active");
   });
   renderRoadmapTree();
+  updateProgressStats();
 }
 
 /* ==========================================================================
@@ -727,6 +822,9 @@ function openTopicModal(topicId, levelId) {
   const modalOverlay = document.getElementById("modal-overlay");
   modalOverlay.classList.add("active");
   document.body.style.overflow = "hidden"; // Chặn cuộn trang nền
+
+  // Render công thức toán học và độ phức tạp bằng KaTeX
+  renderMath(document.querySelector(".modal-dialog"));
 }
 
 function getDiffClass(diff) {
@@ -781,6 +879,10 @@ function switchModalTab(tabId) {
     if (pane.id === tabId) pane.classList.add("active");
     else pane.classList.remove("active");
   });
+
+  // Render toán học trong tab vừa chuyển
+  const activePane = document.getElementById(tabId);
+  if (activePane) renderMath(activePane);
 }
 
 // Cập nhật nút trạng thái học tập trong Modal

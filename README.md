@@ -67,6 +67,14 @@ Hệ thống tuân thủ nghiêm ngặt bộ màu nhận diện sư phạm theo 
 7. **Cẩm Nang Ước Lượng Độ Phức Tạp ICPC:**
    - Bảng quy tắc vàng đối chiếu giới hạn $N$ với thuật toán tương ứng khi làm bài thi.
 
+8. **Tích Hợp Thư Viện Toán Học KaTeX (Mới):**
+   - Tự động hiển thị công thức toán học và độ phức tạp thuật toán chuẩn mực giáo khoa ($\mathcal{O}(N)$, $\mathcal{O}(N \log N)$, $\mathcal{O}(2^N)$, $\sum_{i=1}^N i$, phân số, modulo $\pmod M$, căn thức...).
+   - Tốc độ hiển thị siêu tốc (blazing fast) không gây giật lag trang.
+
+9. **Tối Ưu Hóa Responsive Đa Thiết Bị (Mới):**
+   - **Máy chiếu lớp học (Classroom Projectors - 1024x768, 1280x800):** Tối ưu tỷ lệ chữ to rõ, tương phản cao, công thức hiển thị sắc nét từ khoảng cách xa trong giảng đường.
+   - **Điện thoại di động (Smartphones - 360px đến 640px):** Thanh lọc Level trượt ngang mượt mà, thẻ chuyên đề chạm tay dễ dàng (min-height 44px), Modal co giãn 100% màn hình với cuộn trang êm ái.
+
 ---
 
 ## 🚀 Hướng Dẫn Sử Dụng
