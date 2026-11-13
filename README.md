@@ -30,22 +30,42 @@ Hệ thống tuân thủ nghiêm ngặt bộ màu nhận diện sư phạm theo 
 
 ## 🌟 Các Tính Năng Nổi Bật
 
-1. **Sơ Đồ Cây Lộ Trình (Interactive Roadmap Tree):**
+1. **Bộ Tạo Lộ Trình Học Tự Động (Automated Study Planner - Tính năng sư phạm mới):**
+   - Học sinh chọn **Trình độ hiện tại** (vd: Level 0, Level 1, Level 2...) và **Mục tiêu hướng tới** (vd: Level 4 - Cột mốc thi đấu HSG QG & ICPC).
+   - Tùy chỉnh **Quỹ thời gian học mỗi ngày** (1h, 2h, 3h, 4h+) và **Số ngày học trong tuần** (5, 6, 7 ngày).
+   - Hệ thống tự động tính toán tổng số chuyên đề, tổng thời lượng học, số tuần dự kiến và ngày cán đích.
+   - Phân bổ bài giảng chi tiết theo **từng tuần (Tuần 1, Tuần 2, Tuần 3...)**, tích hợp sẵn Checkbox hoàn thành, nút xem Modal, nút Copy nhanh C++, mục tiêu bài tập MarisaOJ và **Lời dặn dò sư phạm của Huấn luyện viên**.
+   - Hỗ trợ in thời gian biểu ra giấy hoặc xuất PDF sạch đẹp bằng nút `🖨 In / Lưu Kế Hoạch (PDF)`.
+
+2. **Thanh Tiến Độ Trực Quan & Lưu Trữ `localStorage` (Progress Dashboard):**
+   - Thanh tiến độ động (Animated Progress Bar) với dải màu chuyển tiếp gradient `#4A78C2` đến `#10B981`.
+   - Hiển thị tỷ lệ hoàn thành `%`, số chuyên đề đã thành thạo trên tổng số chuyên đề.
+   - Huy hiệu trạng thái động: *Chưa bắt đầu* → *Đang khởi động* → *Tăng tốc kiến thức* → *Bứt phá nâng cao* → *Sắp về đích* → *🏆 Đạt chuẩn ICPC*.
+   - Các viên thuốc thống kê tiến độ từng Level (`L0: 5/5`, `L1: 3/5`, `L2: 2/6`...) với tính năng bấm để cuộn trang nhanh tới Level tương ứng.
+   - Nút **"Đặt lại tiến độ"** (Reset Progress) để bắt đầu lại chu trình ôn tập khi cần.
+
+3. **Nút Đánh Dấu 'Đã Hoàn Thành' & Nút Copy Nhanh Template C++ Trực Tiếp Trên Từng Thẻ:**
+   - Mỗi thẻ chuyên đề trên cây lộ trình được tích hợp thanh tác vụ nhanh:
+     - Nút **`[✔ Đã hoàn thành]` / `[○ Chưa học]`**: Bấm để đánh dấu nhanh, tự động lưu vào `localStorage`, đổi kiểu giao diện thẻ sang viền xanh nổi bật và đồng bộ tức thì lên thanh tiến độ.
+     - Nút **`[📋 C++]`**: Sao chép ngay lập tức mã nguồn Template C++ chuẩn ICPC vào bộ nhớ tạm mà không cần phải mở Modal, kèm thông báo Toast nổi sinh động.
+
+4. **Sơ Đồ Cây Lộ Trình (Interactive Roadmap Tree):**
    - Thiết kế trục spine dọc trực quan với các mốc Milestone Badge (LVL 0 đến LVL 100).
    - Bộ lọc cấp độ tức thời (Level filter chips) và thanh tìm kiếm thuật toán thời gian thực (Live Search).
-2. **Modal Tương Tác Đa Năng (4 Tabs):**
+
+5. **Modal Tương Tác Đa Năng (4 Tabs):**
    - **Tab 1 - Bản chất & Trực quan:** Giải thích tường minh ý tưởng, trực quan hóa tư duy sư phạm và nhúng bộ mô phỏng động.
    - **Tab 2 - Độ phức tạp & Cạm bẫy:** Phân tích chi tiết $O(N)$ thời gian, bộ nhớ, giới hạn $10^8$ ops/giây và danh sách các bẫy thường gặp trong contest.
    - **Tab 3 - Template C++ chuẩn ICPC:** Mã nguồn tối ưu, chuẩn C++17/C++20, Fast I/O, chú thích rõ ràng, hỗ trợ sao chép 1-click có thông báo Toast.
    - **Tab 4 - Thực hành MarisaOJ:** Danh sách bài tập trực tiếp trên hệ thống [MarisaOJ](https://marisaoj.com) kèm mã bài, tên bài và mức độ khó.
-3. **Phòng Thí Nghiệm Giải Thuật Trực Quan (Visualizer Lab):**
+
+6. **Phòng Thí Nghiệm Giải Thuật Trực Quan (Visualizer Lab):**
    - Mô phỏng bước chạy Tìm kiếm nhị phân (Binary Search).
    - Mô phỏng bước chạy Hai con trỏ (Two Pointers).
    - Mô phỏng bước chạy Mảng cộng dồn (Prefix Sum O(1) query).
-4. **Cẩm Nang Ước Lượng Độ Phức Tạp ICPC:**
+
+7. **Cẩm Nang Ước Lượng Độ Phức Tạp ICPC:**
    - Bảng quy tắc vàng đối chiếu giới hạn $N$ với thuật toán tương ứng khi làm bài thi.
-5. **Lưu Trữ Tiến Độ Học Tập Cá Nhân:**
-   - Tự động lưu trạng thái (Chưa học, Đang luyện tập, Đã thành thạo) vào `localStorage`.
 
 ---
 

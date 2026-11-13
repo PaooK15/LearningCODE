@@ -180,7 +180,7 @@ input, select {
   border-radius: var(--radius-sm);
   color: var(--text-main);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   transition: all var(--transition-fast);
 }
 
@@ -220,7 +220,7 @@ input, select {
    Hero & Coach Section
    ========================================================================== */
 .hero-section {
-  padding: 48px 0 32px;
+  padding: 40px 0 28px;
   background: linear-gradient(180deg, var(--bg-secondary) 0%, rgba(238, 242, 247, 0.4) 100%);
   border-bottom: 1px solid var(--border-light);
 }
@@ -248,11 +248,11 @@ input, select {
 }
 
 .hero-title {
-  font-size: 2.35rem;
+  font-size: 2.2rem;
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.25;
   color: var(--color-title);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   letter-spacing: -0.03em;
 }
 
@@ -261,34 +261,34 @@ input, select {
 }
 
 .hero-desc {
-  font-size: 1.05rem;
+  font-size: 1rem;
   color: var(--text-muted);
-  margin-bottom: 24px;
+  margin-bottom: 22px;
   max-width: 620px;
 }
 
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 14px;
 }
 
 .stat-item {
   background-color: #FFFFFF;
-  padding: 16px;
+  padding: 14px 16px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-sm);
 }
 
 .stat-num {
-  font-size: 1.75rem;
+  font-size: 1.6rem;
   font-weight: 800;
   color: var(--color-title);
 }
 
 .stat-label {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
   font-weight: 500;
 }
@@ -297,7 +297,7 @@ input, select {
   background-color: #FFFFFF;
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 24px;
+  padding: 22px 24px;
   box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
@@ -317,51 +317,51 @@ input, select {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .coach-avatar {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: var(--bg-secondary);
   border: 2px solid var(--color-accent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   color: var(--color-title);
 }
 
 .coach-name {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--color-title);
 }
 
 .coach-title {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--color-accent);
   font-weight: 600;
 }
 
 .coach-quote {
   font-style: italic;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   color: var(--text-main);
   background-color: var(--bg-secondary);
-  padding: 14px 16px;
+  padding: 12px 14px;
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--color-accent);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .coach-tips-list {
   list-style: none;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .coach-tips-list li {
@@ -376,11 +376,369 @@ input, select {
 }
 
 /* ==========================================================================
+   CORE FEATURE: PROGRESS DASHBOARD (THANH TIẾN ĐỘ TRỰC QUAN & LEVEL STATS)
+   ========================================================================== */
+.progress-dashboard {
+  background-color: #FFFFFF;
+  border-bottom: 1px solid var(--border-light);
+  padding: 20px 0;
+}
+
+.progress-dashboard-inner {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.progress-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-main-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-title);
+}
+
+.progress-status-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background-color: #FFFFFF;
+  color: var(--color-accent);
+  border: 1px solid var(--border-light);
+}
+
+.progress-count-text {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-title);
+}
+
+/* Visual Progress Bar Track & Fill */
+.progress-bar-container {
+  width: 100%;
+  height: 14px;
+  background-color: #FFFFFF;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-accent) 0%, #10B981 100%);
+  border-radius: var(--radius-full);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.progress-bar-glow {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-full);
+}
+
+/* Level Breakdown Mini Progress Pills */
+.level-progress-grid {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.level-prog-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-light);
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: all var(--transition-fast);
+}
+
+.level-prog-pill:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.level-prog-pill.completed {
+  border-color: #10B981;
+  background-color: #ECFDF5;
+  color: #047857;
+}
+
+.prog-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #94A3B8;
+}
+
+.level-prog-pill.completed .prog-dot {
+  background-color: #10B981;
+}
+
+.progress-reset-btn {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.progress-reset-btn:hover {
+  color: #DC2626;
+}
+
+/* ==========================================================================
+   CORE FEATURE: STUDY PLANNER (BỘ TẠO LỘ TRÌNH HỌC TỰ ĐỘNG)
+   ========================================================================== */
+.study-planner-section {
+  padding: 48px 0;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.planner-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-md);
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.planner-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-title);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-select, .form-input {
+  padding: 10px 14px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-secondary);
+  font-size: 0.9rem;
+  color: var(--text-main);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.form-select:focus, .form-input:focus {
+  border-color: var(--color-accent);
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(74, 120, 194, 0.15);
+}
+
+.planner-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 20px;
+  flex-wrap: wrap;
+}
+
+.planner-summary-card {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.summary-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.metric-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-title);
+}
+
+.metric-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Timeline Cards of Weekly Plan */
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.week-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  border-left: 4px solid var(--color-accent);
+}
+
+.week-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+.week-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.week-title-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.week-tag {
+  background-color: var(--color-title);
+  color: #FFFFFF;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+
+.week-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--color-title);
+}
+
+.week-time-chip {
+  font-size: 0.8rem;
+  font-weight: 600;
+  background-color: var(--bg-secondary);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  color: var(--color-accent);
+}
+
+.week-topics-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.week-topic-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  gap: 10px;
+}
+
+.week-topic-item.completed {
+  background-color: #ECFDF5;
+  border-color: #A7F3D0;
+}
+
+.week-topic-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.week-topic-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-title);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.week-coach-note {
+  background-color: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: #92400E;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* ==========================================================================
    Search & Filter Bar
    ========================================================================== */
 .controls-bar {
   background-color: #FFFFFF;
-  padding: 20px 0;
+  padding: 18px 0;
   border-bottom: 1px solid var(--border-light);
   position: sticky;
   top: 72px;
@@ -459,28 +817,6 @@ input, select {
   border-color: var(--color-title);
 }
 
-.view-toggle {
-  display: flex;
-  background-color: var(--bg-secondary);
-  border-radius: var(--radius-sm);
-  padding: 3px;
-  border: 1px solid var(--border-light);
-}
-
-.view-btn {
-  padding: 6px 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  border-radius: 4px;
-  color: var(--text-muted);
-}
-
-.view-btn.active {
-  background-color: #FFFFFF;
-  color: var(--color-title);
-  box-shadow: var(--shadow-sm);
-}
-
 /* ==========================================================================
    Roadmap Tree View (Sơ đồ cây lộ trình)
    ========================================================================== */
@@ -491,7 +827,7 @@ input, select {
 
 .section-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
 
 .section-tag {
@@ -610,7 +946,7 @@ input, select {
   transform: translateY(-2px);
 }
 
-/* Boss Level Special Stye */
+/* Boss Level Special Style */
 .level-block.boss-level .milestone-badge {
   border-color: #B71C1C;
   color: #B71C1C;
@@ -706,22 +1042,24 @@ input, select {
 
 .subtopics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
   gap: 12px;
 }
 
-/* Individual Topic Pill/Card */
+/* ==========================================================================
+   UPGRADED TOPIC NODE: DIRECT CHECKBOX & QUICK COPY C++ BUTTON
+   ========================================================================== */
 .topic-node {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   padding: 12px 14px;
-  cursor: pointer;
   transition: all var(--transition-fast);
   text-align: left;
+  gap: 8px;
+  position: relative;
 }
 
 .topic-node:hover {
@@ -731,11 +1069,86 @@ input, select {
   transform: translateY(-2px);
 }
 
+.topic-node.is-completed {
+  background-color: #F0FDF4;
+  border-color: #86EFAC;
+}
+
+.topic-node.is-completed:hover {
+  background-color: #FFFFFF;
+  border-color: #10B981;
+}
+
+/* Header inside Topic Card: Action row */
+.topic-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(220, 228, 238, 0.6);
+  padding-bottom: 8px;
+}
+
+.topic-check-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background-color: #FFFFFF;
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+  transition: all var(--transition-fast);
+}
+
+.topic-check-btn:hover {
+  border-color: #10B981;
+  color: #047857;
+  background-color: #ECFDF5;
+}
+
+.topic-check-btn.checked {
+  background-color: #10B981;
+  color: #FFFFFF;
+  border-color: #10B981;
+}
+
+.quick-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background-color: #FFFFFF;
+  color: var(--color-title);
+  border: 1px solid var(--border-light);
+  transition: all var(--transition-fast);
+}
+
+.quick-copy-btn:hover {
+  background-color: var(--color-accent);
+  color: #FFFFFF;
+  border-color: var(--color-accent);
+}
+
+/* Body of Topic Node */
+.topic-node-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  gap: 10px;
+}
+
 .topic-node-info {
   display: flex;
   flex-direction: column;
   gap: 4px;
   overflow: hidden;
+  flex: 1;
 }
 
 .topic-node-title {
@@ -745,6 +1158,10 @@ input, select {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.topic-node.is-completed .topic-node-title {
+  color: #065F46;
 }
 
 .topic-node-meta {
@@ -764,8 +1181,8 @@ input, select {
 
 .topic-node-arrow {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background-color: #FFFFFF;
   display: flex;
@@ -780,23 +1197,6 @@ input, select {
 .topic-node:hover .topic-node-arrow {
   background-color: var(--color-accent);
   color: #FFFFFF;
-}
-
-/* Topic Node status indicator */
-.topic-status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #94A3B8;
-  flex-shrink: 0;
-}
-
-.topic-status-dot.completed {
-  background-color: #10B981;
-}
-
-.topic-status-dot.learning {
-  background-color: #F59E0B;
 }
 
 /* ==========================================================================
@@ -1651,11 +2051,30 @@ input, select {
 }
 
 /* ==========================================================================
+   Print Styles (In lộ trình học tập ra PDF/Giấy)
+   ========================================================================== */
+@media print {
+  .site-header, .controls-bar, .visualizer-section, .cheatsheet-section, 
+  .site-footer, .planner-action-bar, .modal-overlay, .toast-container {
+    display: none !important;
+  }
+  body, .study-planner-section, .planner-card {
+    background: #FFFFFF !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}
+
+/* ==========================================================================
    Responsive Adaptations
    ========================================================================== */
 @media (max-width: 900px) {
   .hero-grid {
     grid-template-columns: 1fr;
+  }
+
+  .planner-form, .planner-summary-card {
+    grid-template-columns: 1fr 1fr;
   }
 
   .tree-container::before {
@@ -1698,6 +2117,10 @@ input, select {
 
   .nav-links {
     display: none;
+  }
+
+  .planner-form, .planner-summary-card {
+    grid-template-columns: 1fr;
   }
 
   .controls-inner {

@@ -1,6 +1,9 @@
 /**
  * MarisaOJ ICPC Roadmap - Interactive Controller Application
- * Xử lý kết xuất sơ đồ cây, lọc tìm kiếm, quản lý Modal chi tiết và tiến độ học tập
+ * Nâng cấp tính năng Sư phạm cốt lõi:
+ * 1. Bộ tạo lộ trình học tự động (Study Planner) theo từng tuần
+ * 2. Thanh tiến độ trực quan (Progress Bar) & nút Đánh dấu hoàn thành từng chủ đề
+ * 3. Nút Copy nhanh Template C++ chuẩn ICPC trực tiếp trên từng thẻ
  */
 
 // Trạng thái ứng dụng
@@ -22,7 +25,22 @@ document.addEventListener("DOMContentLoaded", () => {
   initModalListeners();
   initVisualizerLab();
   updateProgressStats();
+  // Khởi tạo Study Planner mặc định và gán sự kiện lắng nghe tự động cập nhật
+  initStudyPlannerListeners();
+  generateStudyPlan();
 });
+
+function initStudyPlannerListeners() {
+  const inputs = ["planner-start-level", "planner-target-level", "planner-daily-hours", "planner-days-week"];
+  inputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("change", () => {
+        generateStudyPlan();
+      });
+    }
+  });
+}
 
 /* ==========================================================================
    1. RENDER ROADMAP TREE (SƠ ĐỒ CÂY LỘ TRÌNH LEVEL 0 -> 6, 100)
@@ -121,28 +139,47 @@ function renderRoadmapTree() {
           <div class="subtopics-wrapper">
             <div class="subtopics-label">
               <span>Chuyên đề cốt lõi (${displayedTopics.length} nội dung)</span>
-              <span style="font-size: 0.75rem; color: #5B6E87; font-weight: 500;">Bấm vào chuyên đề để xem lý thuyết & code</span>
+              <span style="font-size: 0.75rem; color: #5B6E87; font-weight: 500;">Bấm vào thẻ để xem Modal chi tiết hoặc dùng nút thao tác nhanh</span>
             </div>
             <div class="subtopics-grid">
               ${displayedTopics.map(topic => {
                 const status = AppState.progress[topic.id] || "not_started";
-                const statusClass = (status === "completed") ? "completed" : (status === "learning" ? "learning" : "");
-                const statusTitle = (status === "completed") ? "Đã thành thạo" : (status === "learning" ? "Đang luyện tập" : "Chưa học");
+                const isCompleted = (status === "completed");
 
                 return `
-                  <div class="topic-node" onclick="openTopicModal('${topic.id}', '${level.id}')" title="${topic.shortDesc}">
-                    <div class="topic-node-info">
-                      <div style="display:flex; align-items:center; gap:6px;">
-                        <span class="topic-status-dot ${statusClass}" title="${statusTitle}"></span>
-                        <h4 class="topic-node-title">${topic.title}</h4>
-                      </div>
-                      <div class="topic-node-meta">
-                        <span class="topic-category-tag">${topic.category}</span>
-                        <span class="topic-difficulty-stars">${'★'.repeat(topic.difficulty)}</span>
-                      </div>
+                  <div class="topic-node ${isCompleted ? 'is-completed' : ''}" id="topic-card-${topic.id}">
+                    <!-- Thanh thao tác nhanh: Checkbox hoàn thành & Copy nhanh Template C++ -->
+                    <div class="topic-card-actions">
+                      <button 
+                        class="topic-check-btn ${isCompleted ? 'checked' : ''}" 
+                        onclick="toggleTopicCompletion('${topic.id}', event)"
+                        title="${isCompleted ? 'Bấm để hủy hoàn thành' : 'Đánh dấu đã hoàn thành'}"
+                      >
+                        <span class="check-icon">${isCompleted ? '✔' : '○'}</span>
+                        <span class="check-text">${isCompleted ? 'Đã hoàn thành' : 'Chưa học'}</span>
+                      </button>
+
+                      <button 
+                        class="quick-copy-btn" 
+                        onclick="quickCopyCpp('${topic.id}', event)"
+                        title="Sao chép nhanh Template C++ chuẩn"
+                      >
+                        <span>📋</span> C++
+                      </button>
                     </div>
-                    <div class="topic-node-arrow" title="Xem chi tiết">
-                      &rarr;
+
+                    <!-- Phần thân thẻ: Bấm vào để mở Modal chi tiết 4 tab -->
+                    <div class="topic-node-body" onclick="openTopicModal('${topic.id}', '${level.id}')" title="${topic.shortDesc}">
+                      <div class="topic-node-info">
+                        <h4 class="topic-node-title">${topic.title}</h4>
+                        <div class="topic-node-meta">
+                          <span class="topic-category-tag">${topic.category}</span>
+                          <span class="topic-difficulty-stars">${'★'.repeat(topic.difficulty)}</span>
+                        </div>
+                      </div>
+                      <div class="topic-node-arrow" title="Xem giải thích & trực quan">
+                        &rarr;
+                      </div>
                     </div>
                   </div>
                 `;
@@ -158,7 +195,388 @@ function renderRoadmapTree() {
 }
 
 /* ==========================================================================
-   2. CHEATSHEET BẢNG QUY TẮC ĐỘ PHỨC TẠP ICPC
+   2. TIẾN ĐỘ HỌC TẬP & LOCALSTORAGE (CORE FEATURE 2)
+   ========================================================================== */
+function toggleTopicCompletion(topicId, event) {
+  if (event) event.stopPropagation(); // Không mở modal
+
+  const current = AppState.progress[topicId] || "not_started";
+  const newStatus = (current === "completed") ? "not_started" : "completed";
+  
+  AppState.progress[topicId] = newStatus;
+  localStorage.setItem("marisa_cp_progress", JSON.stringify(AppState.progress));
+
+  // Cập nhật giao diện thẻ tức thời
+  const card = document.getElementById(`topic-card-${topicId}`);
+  if (card) {
+    const checkBtn = card.querySelector(".topic-check-btn");
+    if (newStatus === "completed") {
+      card.classList.add("is-completed");
+      if (checkBtn) {
+        checkBtn.classList.add("checked");
+        checkBtn.innerHTML = `<span class="check-icon">✔</span><span class="check-text">Đã hoàn thành</span>`;
+      }
+    } else {
+      card.classList.remove("is-completed");
+      if (checkBtn) {
+        checkBtn.classList.remove("checked");
+        checkBtn.innerHTML = `<span class="check-icon">○</span><span class="check-text">Chưa học</span>`;
+      }
+    }
+  }
+
+  // Cập nhật Modal nếu đang mở
+  if (AppState.currentTopic && AppState.currentTopic.id === topicId) {
+    updateModalStatusButton(topicId);
+  }
+
+  // Đồng bộ lại Study Planner Checklist nếu đang hiển thị
+  const plannerCheck = document.getElementById(`planner-chk-${topicId}`);
+  if (plannerCheck) {
+    plannerCheck.checked = (newStatus === "completed");
+    const pItem = plannerCheck.closest(".week-topic-item");
+    if (pItem) {
+      if (newStatus === "completed") pItem.classList.add("completed");
+      else pItem.classList.remove("completed");
+    }
+  }
+
+  // Tính lại tiến độ
+  updateProgressStats();
+
+  // Thông báo toast
+  if (newStatus === "completed") {
+    showToast("🎉 Tuyệt vời! Bạn đã hoàn thành chuyên đề này.");
+  } else {
+    showToast("Đã đặt lại trạng thái: Chưa học.");
+  }
+}
+
+function updateProgressStats() {
+  let totalTopics = 0;
+  let completedCount = 0;
+  const levelStats = [];
+
+  MARISA_ROADMAP_DATA.forEach(lvl => {
+    let lvlTotal = lvl.topics.length;
+    let lvlDone = 0;
+    totalTopics += lvlTotal;
+
+    lvl.topics.forEach(t => {
+      if (AppState.progress[t.id] === "completed") {
+        completedCount++;
+        lvlDone++;
+      }
+    });
+
+    levelStats.push({
+      id: lvl.id,
+      number: lvl.levelNumber,
+      title: lvl.title,
+      done: lvlDone,
+      total: lvlTotal,
+      isAllDone: (lvlDone === lvlTotal && lvlTotal > 0)
+    });
+  });
+
+  const percent = totalTopics > 0 ? Math.round((completedCount / totalTopics) * 100) : 0;
+
+  // 1. Cập nhật thanh header
+  const progressPill = document.getElementById("header-progress-text");
+  if (progressPill) {
+    progressPill.innerText = `${completedCount}/${totalTopics} chuyên đề (${percent}%)`;
+  }
+
+  // 2. Cập nhật hero stat
+  const statProgress = document.getElementById("stat-hero-progress");
+  if (statProgress) {
+    statProgress.innerText = `${percent}%`;
+  }
+
+  // 3. Cập nhật Progress Bar lớn
+  const progressBarFill = document.getElementById("progress-bar-fill");
+  if (progressBarFill) {
+    progressBarFill.style.width = `${percent}%`;
+  }
+
+  const progressBarCount = document.getElementById("progress-bar-count");
+  if (progressBarCount) {
+    progressBarCount.innerText = `${completedCount} / ${totalTopics} chuyên đề hoàn thành (${percent}%)`;
+  }
+
+  // 4. Cập nhật nhãn trạng thái động
+  const badge = document.getElementById("progress-status-badge");
+  if (badge) {
+    if (percent === 0) badge.innerText = "Chưa bắt đầu";
+    else if (percent <= 25) badge.innerText = "Đang khởi động";
+    else if (percent <= 55) badge.innerText = "Tăng tốc kiến thức";
+    else if (percent <= 85) badge.innerText = "Bứt phá nâng cao";
+    else if (percent < 100) badge.innerText = "Sắp về đích!";
+    else badge.innerText = "🏆 Đạt chuẩn ICPC!";
+  }
+
+  // 5. Cập nhật các viên thuốc thống kê từng Level
+  const grid = document.getElementById("level-progress-grid");
+  if (grid) {
+    grid.innerHTML = levelStats.map(ls => `
+      <a href="#${ls.id}" class="level-prog-pill ${ls.isAllDone ? 'completed' : ''}" title="Bấm để cuộn tới ${ls.title}">
+        <span class="prog-dot"></span>
+        <span>L${ls.number}: <strong>${ls.done}/${ls.total}</strong></span>
+      </a>
+    `).join("");
+  }
+}
+
+function resetAllProgress() {
+  if (confirm("Bạn có chắc chắn muốn đặt lại toàn bộ tiến độ học tập về 0%?")) {
+    AppState.progress = {};
+    localStorage.removeItem("marisa_cp_progress");
+    renderRoadmapTree();
+    updateProgressStats();
+    generateStudyPlan();
+    showToast("Đã đặt lại toàn bộ tiến độ học tập!");
+  }
+}
+
+/* ==========================================================================
+   3. SAO CHÉP NHANH TEMPLATE C++ CHUẨN ICPC (CORE FEATURE 2)
+   ========================================================================== */
+function quickCopyCpp(topicId, event) {
+  if (event) event.stopPropagation(); // Không mở modal
+
+  let targetTopic = null;
+  for (const lvl of MARISA_ROADMAP_DATA) {
+    const found = lvl.topics.find(t => t.id === topicId);
+    if (found) {
+      targetTopic = found;
+      break;
+    }
+  }
+
+  if (!targetTopic || !targetTopic.cppTemplate) {
+    showToast("Không tìm thấy Template C++.");
+    return;
+  }
+
+  navigator.clipboard.writeText(targetTopic.cppTemplate).then(() => {
+    showToast(`⚡ Đã sao chép nhanh Template C++ "${targetTopic.title}"!`);
+  }).catch(() => {
+    showToast("Không thể sao chép tự động. Vui lòng thử lại.");
+  });
+}
+
+function copyCppCode() {
+  const codeElem = document.getElementById("modal-cpp-code");
+  if (!codeElem) return;
+
+  const text = codeElem.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast("Đã sao chép Template C++ vào bộ nhớ tạm!");
+  }).catch(() => {
+    showToast("Không thể tự động sao chép. Vui lòng copy thủ công.");
+  });
+}
+
+/* ==========================================================================
+   4. BỘ TẠO LỘ TRÌNH HỌC TỰ ĐỘNG (STUDY PLANNER - CORE FEATURE 1)
+   ========================================================================== */
+function generateStudyPlan() {
+  const startLvlElem = document.getElementById("planner-start-level");
+  const targetLvlElem = document.getElementById("planner-target-level");
+  const dailyHoursElem = document.getElementById("planner-daily-hours");
+  const daysWeekElem = document.getElementById("planner-days-week");
+  const resultContainer = document.getElementById("planner-result-container");
+
+  if (!startLvlElem || !targetLvlElem || !dailyHoursElem || !daysWeekElem || !resultContainer) return;
+
+  const startLevelId = startLvlElem.value;
+  const targetLevelId = targetLvlElem.value;
+  const dailyHours = parseFloat(dailyHoursElem.value) || 2;
+  const daysPerWeek = parseInt(daysWeekElem.value, 10) || 6;
+
+  // Lấy danh sách Level index
+  const startIdx = MARISA_ROADMAP_DATA.findIndex(l => l.id === startLevelId);
+  const targetIdx = MARISA_ROADMAP_DATA.findIndex(l => l.id === targetLevelId);
+
+  if (startIdx > targetIdx) {
+    resultContainer.innerHTML = `
+      <div style="padding: 24px; background: #FEE2E2; border: 1px solid #FECACA; border-radius: 8px; color: #991B1B; margin-top: 20px;">
+        <strong>Lỗi lập kế hoạch:</strong> Trình độ hiện tại (${MARISA_ROADMAP_DATA[startIdx].title}) cao hơn hoặc bằng Mục tiêu (${MARISA_ROADMAP_DATA[targetIdx].title}). Vui lòng chọn Mục tiêu cao hơn trình độ hiện tại để hệ thống lên lịch học tập.
+      </div>
+    `;
+    return;
+  }
+
+  // Thu thập tất cả chuyên đề cần học từ startLevel tới targetLevel
+  const plannedTopics = [];
+  for (let i = startIdx; i <= targetIdx; ++i) {
+    const lvl = MARISA_ROADMAP_DATA[i];
+    lvl.topics.forEach(topic => {
+      // Ước lượng thời lượng trung bình cho mỗi chuyên đề:
+      // Level 0: 3h, Level 1: 4h, Level 2: 5h, Level 3: 6h, Level 4: 8h, Level 5: 10h, Level 6: 12h
+      let topicWeightHours = 4;
+      if (lvl.levelNumber === 0) topicWeightHours = 3;
+      else if (lvl.levelNumber === 1) topicWeightHours = 4;
+      else if (lvl.levelNumber === 2) topicWeightHours = 5;
+      else if (lvl.levelNumber === 3) topicWeightHours = 6;
+      else if (lvl.levelNumber === 4) topicWeightHours = 8;
+      else if (lvl.levelNumber >= 5) topicWeightHours = 10;
+
+      plannedTopics.push({
+        ...topic,
+        levelNumber: lvl.levelNumber,
+        levelTitle: lvl.title,
+        estimatedHours: topicWeightHours
+      });
+    });
+  }
+
+  // Tính toán chỉ số tổng thể
+  const totalTopicsCount = plannedTopics.length;
+  const totalRequiredHours = plannedTopics.reduce((acc, cur) => acc + cur.estimatedHours, 0);
+  const weeklyBudgetHours = dailyHours * daysPerWeek;
+  const totalWeeks = Math.max(1, Math.ceil(totalRequiredHours / weeklyBudgetHours));
+
+  // Tính ngày hoàn thành mục tiêu dự kiến
+  const targetDays = totalWeeks * 7;
+  const targetDate = new Date();
+  targetDate.setDate(targetDate.getDate() + targetDays);
+  const formattedTargetDate = targetDate.toLocaleDateString("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric"
+  });
+
+  // Phân bổ chuyên đề vào từng tuần (Mỗi tuần nhận các topic sao cho tổng giờ ≈ weeklyBudgetHours)
+  const weeksPlan = [];
+  let currentWeekTopics = [];
+  let currentWeekHours = 0;
+  let weekIndex = 1;
+
+  plannedTopics.forEach((t, idx) => {
+    currentWeekTopics.push(t);
+    currentWeekHours += t.estimatedHours;
+
+    // Khi đủ quỹ giờ tuần hoặc là chuyên đề cuối cùng
+    if (currentWeekHours >= weeklyBudgetHours || idx === plannedTopics.length - 1) {
+      weeksPlan.push({
+        weekNumber: weekIndex,
+        topics: [...currentWeekTopics],
+        totalHours: currentWeekHours
+      });
+      weekIndex++;
+      currentWeekTopics = [];
+      currentWeekHours = 0;
+    }
+  });
+
+  // Coach advice logic theo tuần
+  const getCoachWeeklyAdvice = (weekNum, topics) => {
+    const hasGraph = topics.some(t => t.category.includes("Đồ thị") || t.id.includes("bfs") || t.id.includes("dfs") || t.id.includes("dijkstra"));
+    const hasTree = topics.some(t => t.id.includes("segment") || t.id.includes("fenwick") || t.id.includes("lca"));
+    const hasDP = topics.some(t => t.category.includes("Quy hoạch") || t.id.includes("dp"));
+    const hasBS = topics.some(t => t.id.includes("binary-search"));
+
+    if (hasBS) return "Ưu tiên luyện tập chặt nhị phân kết quả trên MarisaOJ. Chú ý tính chất đơn điệu của hàm check(mid).";
+    if (hasDP) return "Luôn viết công thức truy hồi và bài toán cơ sở ra giấy trước khi code. Tối ưu không gian bằng mảng 1D khi có thể.";
+    if (hasTree) return "Cài đặt Segment Tree/Fenwick theo dạng struct sạch sẽ. Luôn nhớ khai báo kích thước 4*N cho Segment Tree.";
+    if (hasGraph) return "Phân biệt rõ đồ thị có trọng số và không trọng số. Đánh dấu visited ngay khi push vào Queue để tránh TLE/MLE.";
+    return "Dành 30% thời gian đọc lý thuyết, 70% thời gian gõ code và nộp bài trực tiếp trên hệ thống MarisaOJ.";
+  };
+
+  // Render HTML cho Kế hoạch học tập
+  let html = `
+    <!-- Thống kê tổng quan kế hoạch -->
+    <div class="planner-summary-card">
+      <div class="summary-metric">
+        <span class="metric-label">Khối lượng học</span>
+        <span class="metric-val">${totalTopicsCount}</span>
+        <span class="metric-desc">Chuyên đề trọng tâm</span>
+      </div>
+      <div class="summary-metric">
+        <span class="metric-label">Tổng thời lượng</span>
+        <span class="metric-val">${totalRequiredHours}h</span>
+        <span class="metric-desc">${weeklyBudgetHours} giờ / tuần (${dailyHours}h/ngày × ${daysPerWeek} ngày)</span>
+      </div>
+      <div class="summary-metric">
+        <span class="metric-label">Số tuần dự kiến</span>
+        <span class="metric-val">${weeksPlan.length}</span>
+        <span class="metric-desc">Tuần học tập bài bản</span>
+      </div>
+      <div class="summary-metric">
+        <span class="metric-label">Cán đích dự kiến</span>
+        <span class="metric-val" style="color: #10B981;">${formattedTargetDate}</span>
+        <span class="metric-desc">Chinh phục thành công ${MARISA_ROADMAP_DATA[targetIdx].title}</span>
+      </div>
+    </div>
+
+    <!-- Danh sách chi tiết từng tuần -->
+    <div class="timeline-container">
+      ${weeksPlan.map(wp => {
+        const coachAdvice = getCoachWeeklyAdvice(wp.weekNumber, wp.topics);
+        const focusTopicTitles = wp.topics.map(t => t.title.split("(")[0]).slice(0, 2).join(" & ");
+
+        return `
+          <div class="week-card">
+            <div class="week-card-header">
+              <div class="week-title-badge">
+                <span class="week-tag">TUẦN ${wp.weekNumber}</span>
+                <span class="week-name">Trọng tâm: ${focusTopicTitles}</span>
+              </div>
+              <span class="week-time-chip">⏱ ~${wp.totalHours} giờ học tập</span>
+            </div>
+
+            <div class="week-topics-list">
+              ${wp.topics.map(t => {
+                const isCompleted = (AppState.progress[t.id] === "completed");
+                return `
+                  <div class="week-topic-item ${isCompleted ? 'completed' : ''}">
+                    <div class="week-topic-info">
+                      <input 
+                        type="checkbox" 
+                        id="planner-chk-${t.id}" 
+                        ${isCompleted ? 'checked' : ''} 
+                        onchange="toggleTopicCompletion('${t.id}', event)" 
+                        style="width: 18px; height: 18px; cursor: pointer; accent-color: #10B981;"
+                        title="Đánh dấu đã hoàn thành"
+                      />
+                      <span class="week-topic-title" title="${t.title}">L${t.levelNumber}: ${t.title}</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <button class="btn btn-sm btn-outline" style="padding: 3px 8px; font-size: 0.72rem;" onclick="openTopicModal('${t.id}', 'level-${t.levelNumber}')">
+                        Chi tiết
+                      </button>
+                      <button class="quick-copy-btn" onclick="quickCopyCpp('${t.id}', event)" title="Copy nhanh template C++">
+                        📋 C++
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+
+            <!-- Lời dặn dò của Huấn Luyện Viên -->
+            <div class="week-coach-note">
+              <span style="font-size: 1.1rem;">👨‍🏫</span>
+              <div>
+                <strong>Lời dặn của Coach:</strong> ${coachAdvice}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+
+  resultContainer.innerHTML = html;
+}
+
+function printStudyPlan() {
+  window.print();
+}
+
+/* ==========================================================================
+   5. CHEATSHEET BẢNG QUY TẮC ĐỘ PHỨC TẠP ICPC
    ========================================================================== */
 function renderCheatsheet() {
   const tbody = document.getElementById("cheatsheet-tbody");
@@ -174,7 +592,7 @@ function renderCheatsheet() {
 }
 
 /* ==========================================================================
-   3. BỘ LỌC & TÌM KIẾM
+   6. BỘ LỌC & TÌM KIẾM
    ========================================================================== */
 function initSearchAndFilters() {
   const searchInput = document.getElementById("search-input");
@@ -210,7 +628,7 @@ function resetSearch() {
 }
 
 /* ==========================================================================
-   4. MODAL CHI TIẾT THUẬT TOÁN (TABS, COMPLEXITY, TEMPLATE, MARISA PRACTICE)
+   7. MODAL CHI TIẾT THUẬT TOÁN (TABS, COMPLEXITY, TEMPLATE, MARISA PRACTICE)
    ========================================================================== */
 function openTopicModal(topicId, levelId) {
   let targetTopic = null;
@@ -374,77 +792,20 @@ function updateModalStatusButton(topicId) {
   if (currentStatus === "completed") {
     btn.innerHTML = `<span style="color:#10B981;">✔</span> Đã thành thạo`;
     btn.className = "btn btn-sm btn-secondary";
-  } else if (currentStatus === "learning") {
-    btn.innerHTML = `<span style="color:#F59E0B;">⏳</span> Đang luyện tập`;
-    btn.className = "btn btn-sm btn-secondary";
   } else {
-    btn.innerHTML = `<span>○</span> Đánh dấu đã học`;
+    btn.innerHTML = `<span>○</span> Đánh dấu hoàn thành`;
     btn.className = "btn btn-sm btn-outline";
   }
 }
 
 function toggleCurrentTopicStatus() {
   if (!AppState.currentTopic) return;
-  const topicId = AppState.currentTopic.id;
-  const current = AppState.progress[topicId] || "not_started";
-
-  let nextStatus = "learning";
-  if (current === "not_started") nextStatus = "learning";
-  else if (current === "learning") nextStatus = "completed";
-  else nextStatus = "not_started";
-
-  AppState.progress[topicId] = nextStatus;
-  localStorage.setItem("marisa_cp_progress", JSON.stringify(AppState.progress));
-
-  updateModalStatusButton(topicId);
-  renderRoadmapTree();
-  updateProgressStats();
-
-  let toastMsg = "Đã cập nhật: Chưa học";
-  if (nextStatus === "learning") toastMsg = "Đã chuyển sang: Đang luyện tập ⏳";
-  if (nextStatus === "completed") toastMsg = "Tuyệt vời! Đã hoàn thành chuyên đề ✔";
-  showToast(toastMsg);
-}
-
-function updateProgressStats() {
-  let totalTopics = 0;
-  let completedCount = 0;
-
-  MARISA_ROADMAP_DATA.forEach(lvl => {
-    lvl.topics.forEach(t => {
-      totalTopics++;
-      if (AppState.progress[t.id] === "completed") completedCount++;
-    });
-  });
-
-  const percent = totalTopics > 0 ? Math.round((completedCount / totalTopics) * 100) : 0;
-  
-  const progressPill = document.getElementById("header-progress-text");
-  if (progressPill) {
-    progressPill.innerText = `${completedCount}/${totalTopics} chuyên đề (${percent}%)`;
-  }
-
-  const statProgress = document.getElementById("stat-hero-progress");
-  if (statProgress) {
-    statProgress.innerText = `${percent}%`;
-  }
+  toggleTopicCompletion(AppState.currentTopic.id, null);
 }
 
 /* ==========================================================================
-   5. SAO CHÉP MÃ NGUỒN C++ & TOAST NOTIFICATION
-   ========================================================================== */
-function copyCppCode() {
-  const codeElem = document.getElementById("modal-cpp-code");
-  if (!codeElem) return;
-
-  const text = codeElem.textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    showToast("Đã sao chép Template C++ vào bộ nhớ tạm!");
-  }).catch(() => {
-    showToast("Không thể tự động sao chép. Vui lòng copy thủ công.");
-  });
-}
-
+   8. THÔNG BÁO TOAST NOTIFICATION
+   ========================================================================= */
 function showToast(message) {
   const container = document.getElementById("toast-container");
   if (!container) return;
@@ -465,7 +826,7 @@ function showToast(message) {
 }
 
 /* ==========================================================================
-   6. VISUALIZER LAB TẠI TRANG CHỦ
+   9. VISUALIZER LAB TẠI TRANG CHỦ
    ========================================================================== */
 function initVisualizerLab() {
   // Mặc định khởi chạy Binary Search

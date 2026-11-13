@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MarisaOJ ICPC Roadmap - Lộ Trình Lập Trình Thi Đấu & Giải Thích Thuật Toán</title>
-  <meta name="description" content="Nền tảng tương tác giải thích bản chất thuật toán, độ phức tạp O(N), template C++ chuẩn và lộ trình học code dựa trên khung chuẩn MarisaOJ từ Level 0 đến Level 6 và Level 100.">
+  <meta name="description" content="Nền tảng tương tác giải thích bản chất thuật toán, độ phức tạp O(N), template C++ chuẩn, bộ lập lộ trình học tự động và theo dõi tiến độ dựa trên khung MarisaOJ từ Level 0 đến Level 6 và Level 100.">
   <meta name="theme-color" content="#1F3F73">
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
@@ -36,6 +36,7 @@
         <nav>
           <ul class="nav-links">
             <li><a href="#roadmap" class="nav-link active">Sơ Đồ Cây Lộ Trình</a></li>
+            <li><a href="#study-planner" class="nav-link">Lập Kế Hoạch Học (Planner)</a></li>
             <li><a href="#visualizer-lab" class="nav-link">Phòng Thí Nghiệm Trực Quan</a></li>
             <li><a href="#cheatsheet" class="nav-link">Cẩm Nang Độ Phức Tạp</a></li>
             <li><a href="https://marisaoj.com" target="_blank" rel="noopener noreferrer" class="nav-link">MarisaOJ ↗</a></li>
@@ -44,7 +45,7 @@
 
         <!-- Progress Tracker Pill -->
         <div class="header-actions">
-          <div class="progress-pill" title="Tiến độ học tập các chuyên đề">
+          <div class="progress-pill" title="Tiến độ học tập các chuyên đề đã thành thạo">
             <span class="progress-dot"></span>
             <span id="header-progress-text">0/40 chuyên đề (0%)</span>
           </div>
@@ -117,6 +118,128 @@
   </section>
 
   <!-- ========================================================================
+       CORE FEATURE: DYNAMIC PROGRESS DASHBOARD (THANH TIẾN ĐỘ TRỰC QUAN & LEVEL STATS)
+       ======================================================================== -->
+  <section class="progress-dashboard">
+    <div class="container">
+      <div class="progress-dashboard-inner">
+        <div class="progress-header">
+          <div class="progress-title-group">
+            <h3 class="progress-main-title">📊 Tiến Độ Chinh Phục Toàn Khóa</h3>
+            <span class="progress-status-badge" id="progress-status-badge">Đang khởi động</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <span class="progress-count-text" id="progress-bar-count">0 / 40 chuyên đề hoàn thành (0%)</span>
+            <button class="progress-reset-btn" onclick="resetAllProgress()" title="Đặt lại toàn bộ tiến độ">
+              Đặt lại tiến độ
+            </button>
+          </div>
+        </div>
+
+        <!-- Visual Animated Progress Bar -->
+        <div class="progress-bar-container" title="Tiến độ học tập tổng thể">
+          <div class="progress-bar-fill" id="progress-bar-fill">
+            <div class="progress-bar-glow"></div>
+          </div>
+        </div>
+
+        <!-- Level-by-Level Mini Progress Pills -->
+        <div class="level-progress-grid" id="level-progress-grid">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       CORE FEATURE: STUDY PLANNER (BỘ TẠO LỘ TRÌNH HỌC TỰ ĐỘNG THEO TUẦN)
+       ======================================================================== -->
+  <section class="study-planner-section" id="study-planner">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Tính Năng Sư Phạm Cốt Lõi</span>
+        <h2 class="section-title">Bộ Tạo Lộ Trình Học Tự Động (ICPC Study Planner)</h2>
+        <p class="section-subtitle">
+          Nhập trình độ hiện tại và quỹ thời gian học mỗi ngày của bạn. Hệ thống sẽ tự động phân bổ khối lượng kiến thức, 
+          lập kế hoạch học tập theo từng tuần chi tiết để bạn tự tin chinh phục mục tiêu (Level 4 - Cột mốc vàng thi đấu).
+        </p>
+      </div>
+
+      <div class="planner-card">
+        <!-- Planner Input Form -->
+        <div class="planner-form">
+          <div class="form-group">
+            <label class="form-label" for="planner-start-level">
+              <span>📍 Trình độ hiện tại:</span>
+            </label>
+            <select id="planner-start-level" class="form-select">
+              <option value="level-0">Level 0: Người mới bắt đầu (Chưa vững I/O & Mảng)</option>
+              <option value="level-1" selected>Level 1: Đã biết cú pháp (Cần học Vét cạn & Prefix Sum)</option>
+              <option value="level-2">Level 2: Đã biết Vét cạn (Cần học Binary Search & Two Pointers)</option>
+              <option value="level-3">Level 3: Đã biết Binary Search (Cần học BFS/DFS & Quy hoạch động)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="planner-target-level">
+              <span>🎯 Mục tiêu hướng tới:</span>
+            </label>
+            <select id="planner-target-level" class="form-select">
+              <option value="level-2">Level 2: Thuật toán cốt lõi</option>
+              <option value="level-3">Level 3: Đồ thị & Quy hoạch động cơ bản</option>
+              <option value="level-4" selected>Level 4: Chuẩn HSG Quốc Gia (VOI) & ICPC Regional</option>
+              <option value="level-5">Level 5: Kỹ thuật nâng cao (Mo, Lazy ST, HLD)</option>
+              <option value="level-6">Level 6: Chuyên sâu Olympic (Flow, Centroid, FFT)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="planner-daily-hours">
+              <span>⏱ Quỹ thời gian mỗi ngày:</span>
+            </label>
+            <select id="planner-daily-hours" class="form-select">
+              <option value="1">1 giờ / ngày (Học đều đặn nhẹ nhàng)</option>
+              <option value="2" selected>2 giờ / ngày (Khuyến nghị chuẩn sư phạm)</option>
+              <option value="3">3 giờ / ngày (Cường độ cao / Luyện thi)</option>
+              <option value="4">4+ giờ / ngày (Tập trung toàn thời gian)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="planner-days-week">
+              <span>📅 Số ngày học trong tuần:</span>
+            </label>
+            <select id="planner-days-week" class="form-select">
+              <option value="5">5 ngày / tuần (Nghỉ 2 ngày cuối tuần)</option>
+              <option value="6" selected>6 ngày / tuần (Khuyến nghị tối ưu)</option>
+              <option value="7">7 ngày / tuần (Học liên tục mỗi ngày)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="planner-action-bar">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <button class="btn btn-primary" onclick="generateStudyPlan()">
+              🚀 Tự Động Sinh Thời Gian Biểu Học Tập
+            </button>
+            <button class="btn btn-outline" onclick="printStudyPlan()" title="In ra giấy hoặc lưu thành tệp PDF">
+              🖨 In / Lưu Kế Hoạch (PDF)
+            </button>
+          </div>
+          <span style="font-size: 0.82rem; color: #5B6E87;">
+            * Kế hoạch tự động tích hợp trực tiếp với thanh tiến độ và dữ liệu bài tập MarisaOJ.
+          </span>
+        </div>
+
+        <!-- Generated Plan Container -->
+        <div id="planner-result-container">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
        3. CONTROLS BAR: SEARCH & LEVEL FILTER CHIPS
        ======================================================================== -->
   <section class="controls-bar">
@@ -162,7 +285,8 @@
         <span class="section-tag">Khung Chương Trình Chuẩn Sư Phạm</span>
         <h2 class="section-title">Sơ Đồ Cây Lộ Trình MarisaOJ (Level 0 → Level 100)</h2>
         <p class="section-subtitle">
-          Cấu trúc phân tầng khoa học từ Nhập môn lập trình, Thuật toán cơ bản đến Cấu trúc dữ liệu nâng cao và Đấu trường ICPC World Finals. Bấm vào từng chuyên đề con để mở Modal tương tác đầy đủ.
+          Cấu trúc phân tầng khoa học từ Nhập môn lập trình, Thuật toán cơ bản đến Cấu trúc dữ liệu nâng cao và Đấu trường ICPC World Finals. 
+          Bấm nút <strong>[✔ Đã hoàn thành]</strong> để lưu tiến độ hoặc nút <strong>[📋 C++]</strong> để sao chép nhanh Template C++.
         </p>
       </div>
 
