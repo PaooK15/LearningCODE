@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MarisaOJ ICPC Roadmap - Lộ Trình Lập Trình Thi Đấu & Giải Thích Thuật Toán</title>
+  <meta name="description" content="Nền tảng tương tác giải thích bản chất thuật toán, độ phức tạp O(N), template C++ chuẩn và lộ trình học code dựa trên khung chuẩn MarisaOJ từ Level 0 đến Level 6 và Level 100.">
+  <meta name="theme-color" content="#1F3F73">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       1. SITE HEADER & NAVIGATION
+       ======================================================================== -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <!-- Logo & Branding -->
+        <a href="#home" class="brand-logo">
+          <div class="brand-icon">M</div>
+          <div class="brand-text">
+            <span class="brand-title">MarisaOJ ICPC Coach</span>
+            <span class="brand-subtitle">Lộ Trình Giải Thuật Chuẩn Sư Phạm</span>
+          </div>
+        </a>
+
+        <!-- Main Navigation Links -->
+        <nav>
+          <ul class="nav-links">
+            <li><a href="#roadmap" class="nav-link active">Sơ Đồ Cây Lộ Trình</a></li>
+            <li><a href="#visualizer-lab" class="nav-link">Phòng Thí Nghiệm Trực Quan</a></li>
+            <li><a href="#cheatsheet" class="nav-link">Cẩm Nang Độ Phức Tạp</a></li>
+            <li><a href="https://marisaoj.com" target="_blank" rel="noopener noreferrer" class="nav-link">MarisaOJ ↗</a></li>
+          </ul>
+        </nav>
+
+        <!-- Progress Tracker Pill -->
+        <div class="header-actions">
+          <div class="progress-pill" title="Tiến độ học tập các chuyên đề">
+            <span class="progress-dot"></span>
+            <span id="header-progress-text">0/40 chuyên đề (0%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       2. HERO BANNER & ICPC COACH INTRODUCTION
+       ======================================================================== -->
+  <section class="hero-section" id="home">
+    <div class="container">
+      <div class="hero-grid">
+        <!-- Left: Mission & Overview -->
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span>🎯</span> Lộ trình chuẩn hóa theo khung Marisa Online Judge
+          </div>
+          <h1 class="hero-title">
+            Chinh Phục Thuật Toán & Lập Trình Thi Đấu Từ <span class="highlight">Level 0 Đến Level 100</span>
+          </h1>
+          <p class="hero-desc">
+            Được thiết kế bởi Kỹ sư phần mềm giáo dục và Huấn luyện viên Lập trình thi đấu (ICPC). 
+            Hiểu sâu <strong>bản chất trực quan</strong> của thuật toán, làm chủ <strong>độ phức tạp O(N)</strong>, 
+            sở hữu <strong>Template C++ chuẩn thi đấu</strong> và thực hành trực tiếp trên hệ thống MarisaOJ.
+          </p>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-num">8</div>
+              <div class="stat-label">Cấp độ Level 0 → 6, 100</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">45+</div>
+              <div class="stat-label">Chuyên đề thuật toán cốt lõi</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num" id="stat-hero-progress">0%</div>
+              <div class="stat-label">Tiến độ bạn đã hoàn thành</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: ICPC Coach Pedagogical Advice Card -->
+        <div class="coach-card">
+          <div class="coach-header">
+            <div class="coach-avatar">👨‍🏫</div>
+            <div>
+              <div class="coach-name">Lời Khuyên Của Huấn Luyện Viên</div>
+              <div class="coach-title">ICPC Coach & Educational Engineer</div>
+            </div>
+          </div>
+          <div class="coach-quote">
+            "Trong lập trình thi đấu, đừng học vẹt mã nguồn. Hãy vẽ thuật toán ra giấy, hiểu cách con trỏ dịch chuyển và luôn tính trước độ phức tạp O(N) trước khi gõ dòng code đầu tiên."
+          </div>
+          <ul class="coach-tips-list">
+            <li>
+              <strong>1. Hiểu bản chất:</strong> Nhìn thấy dữ liệu biến đổi từng bước thay vì đoán mò.
+            </li>
+            <li>
+              <strong>2. Bắt lỗi biên:</strong> Tràn số <code>long long</code>, 0-indexed vs 1-indexed, đệ quy tràn stack.
+            </li>
+            <li>
+              <strong>3. Thực hành phản xạ:</strong> Mỗi lý thuyết đều có link giải bài trực tiếp trên MarisaOJ.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       3. CONTROLS BAR: SEARCH & LEVEL FILTER CHIPS
+       ======================================================================== -->
+  <section class="controls-bar">
+    <div class="container">
+      <div class="controls-inner">
+        <!-- Live Search Input -->
+        <div class="search-wrapper">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            id="search-input" 
+            class="search-input" 
+            placeholder="Tìm kiếm thuật toán (vd: Binary Search, Segment Tree, DFS, DP...)" 
+            autocomplete="off"
+          />
+        </div>
+
+        <!-- Level Filter Chips (Level 0 -> Level 6 & Level 100) -->
+        <div class="level-filter-chips">
+          <button class="filter-chip active" data-level="all">Tất cả</button>
+          <button class="filter-chip" data-level="level-0">Level 0</button>
+          <button class="filter-chip" data-level="level-1">Level 1</button>
+          <button class="filter-chip" data-level="level-2">Level 2</button>
+          <button class="filter-chip" data-level="level-3">Level 3</button>
+          <button class="filter-chip" data-level="level-4">Level 4</button>
+          <button class="filter-chip" data-level="level-5">Level 5</button>
+          <button class="filter-chip" data-level="level-6">Level 6</button>
+          <button class="filter-chip" data-level="level-100" style="color: #B71C1C;">Level 100</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       4. ROADMAP TREE FLOWCHART (SƠ ĐỒ CÂY LỘ TRÌNH CHUẨN MARISAOJ)
+       ======================================================================== -->
+  <main class="roadmap-section" id="roadmap">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Khung Chương Trình Chuẩn Sư Phạm</span>
+        <h2 class="section-title">Sơ Đồ Cây Lộ Trình MarisaOJ (Level 0 → Level 100)</h2>
+        <p class="section-subtitle">
+          Cấu trúc phân tầng khoa học từ Nhập môn lập trình, Thuật toán cơ bản đến Cấu trúc dữ liệu nâng cao và Đấu trường ICPC World Finals. Bấm vào từng chuyên đề con để mở Modal tương tác đầy đủ.
+        </p>
+      </div>
+
+      <!-- Container chứa trục cây dọc và các khối Level do app.js render -->
+      <div class="tree-container" id="tree-spine-container">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       5. INTERACTIVE VISUALIZER LAB (PHÒNG THÍ NGHIỆM THUẬT TOÁN)
+       ======================================================================== -->
+  <section class="visualizer-section" id="visualizer-lab">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Phòng Thí Nghiệm Sư Phạm Trực Quan</span>
+        <h2 class="section-title">Mô Phỏng Từng Bước Giải Thuật (Interactive Lab)</h2>
+        <p class="section-subtitle">
+          Quan sát trực tiếp sự chuyển động của các con trỏ, ô nhớ và công thức toán học. Giúp người học hình thành mô hình tư duy trực quan (Mental Model) vững chắc.
+        </p>
+      </div>
+
+      <div class="vis-card-wrapper">
+        <!-- Visualizer Selector Tabs -->
+        <div class="vis-tab-buttons">
+          <button class="vis-tab-btn active" data-vis="bs">
+            🔍 Tìm Kiếm Nhị Phân (Binary Search)
+          </button>
+          <button class="vis-tab-btn" data-vis="tp">
+            👉👈 Kỹ Thuật Hai Con Trỏ (Two Pointers)
+          </button>
+          <button class="vis-tab-btn" data-vis="ps">
+            ⚡ Mảng Cộng Dồn (Prefix Sum O(1))
+          </button>
+        </div>
+
+        <!-- Visualizer Container where VisualizerEngine renders -->
+        <div id="vis-workbench-box"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       6. ICPC COMPLEXITY CHEATSHEET SECTION
+       ======================================================================== -->
+  <section class="cheatsheet-section" id="cheatsheet">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Quy Tắc Vàng Phòng Thi ICPC</span>
+        <h2 class="section-title">Cẩm Nang Ước Lượng Độ Phức Tạp Theo Kích Thước N</h2>
+        <p class="section-subtitle">
+          Với giới hạn thời gian tiêu chuẩn 1.0 giây tương đương ~10^8 phép tính CPU trong C++, bảng quy tắc này giúp bạn chọn đúng thuật toán ngay khi vừa đọc xong đề bài.
+        </p>
+      </div>
+
+      <div class="table-responsive">
+        <table class="cheatsheet-table">
+          <thead>
+            <tr>
+              <th style="width: 20%;">Giới Hạn N</th>
+              <th style="width: 30%;">Độ Phức Tạp Khả Thi</th>
+              <th style="width: 50%;">Họ Thuật Toán & Kỹ Thuật Tiêu Biểu</th>
+            </tr>
+          </thead>
+          <tbody id="cheatsheet-tbody">
+            <!-- Rendered dynamically by app.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       7. INTERACTIVE MODAL DIALOG (GIẢI THÍCH THUẬT TOÁN, COMPLEXITY, TEMPLATE, MARISAOJ)
+       ======================================================================== -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div>
+          <div class="modal-breadcrumbs">
+            <span id="modal-breadcrumb-level">Level 2</span> &rsaquo; 
+            <span id="modal-breadcrumb-category">Tìm kiếm</span>
+          </div>
+          <h3 class="modal-title" id="modal-title">Tìm kiếm nhị phân (Binary Search)</h3>
+        </div>
+        <div class="modal-header-actions">
+          <button class="btn btn-sm btn-outline" id="btn-toggle-status" onclick="toggleCurrentTopicStatus()" title="Đánh dấu tiến độ">
+            <span>○</span> Đánh dấu đã học
+          </button>
+          <button class="btn-close-modal" onclick="closeModal()" title="Đóng (Esc)">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Tabs Navigation -->
+      <div class="modal-tabs">
+        <button class="modal-tab-btn active" data-tab="tab-intuition">
+          💡 Bản Chất & Trực Quan
+        </button>
+        <button class="modal-tab-btn" data-tab="tab-complexity">
+          ⏱ Độ Phức Tạp & Cạm Bẫy
+        </button>
+        <button class="modal-tab-btn" data-tab="tab-template">
+          💻 C++ Template Chuẩn ICPC
+        </button>
+        <button class="modal-tab-btn" data-tab="tab-practice">
+          🚀 Luyện Tập Trên MarisaOJ
+        </button>
+      </div>
+
+      <!-- Modal Body (Content of Active Tab) -->
+      <div class="modal-body">
+        
+        <!-- Tab 1: Bản chất thuật toán & Trực quan -->
+        <div class="tab-pane active" id="tab-intuition">
+          <div class="intuition-content">
+            <div class="pedagogy-box">
+              <h4 class="pedagogy-title">Tóm Tắt Khái Niệm</h4>
+              <p id="modal-short-desc" style="color: #24334A; font-weight: 500;"></p>
+            </div>
+
+            <div>
+              <h4 style="font-size: 1.05rem; font-weight: 800; color: #1F3F73; margin-bottom: 10px;">
+                Ý Tưởng Cốt Lõi & Tư Duy Sư Phạm
+              </h4>
+              <p class="pedagogy-desc" id="modal-intuition-text"></p>
+            </div>
+
+            <!-- Inline Visualizer nếu chuyên đề có hỗ trợ mô phỏng động -->
+            <div id="modal-inline-vis" class="modal-inline-vis-container"></div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Độ phức tạp & Cạm bẫy phòng thi -->
+        <div class="tab-pane" id="tab-complexity">
+          <div class="complexity-grid">
+            <div class="complexity-card">
+              <div class="complexity-label">Thời Gian (Time Complexity)</div>
+              <div class="complexity-val" id="modal-time-complexity">O(log N)</div>
+              <p class="complexity-detail">
+                Ước lượng thời gian chạy dựa trên số phép so sánh hoặc vòng lặp. Luôn đối chiếu với quy tắc 10^8 ops/s.
+              </p>
+            </div>
+            <div class="complexity-card">
+              <div class="complexity-label">Bộ Nhớ (Space Complexity)</div>
+              <div class="complexity-val" id="modal-space-complexity">O(1)</div>
+              <p class="complexity-detail">
+                Bộ nhớ phụ trợ (Auxiliary Space) và độ sâu ngăn xếp đệ quy (Call Stack Depth). Giới hạn thường 256MB.
+              </p>
+            </div>
+          </div>
+
+          <div class="pedagogy-box" style="margin-bottom: 16px;">
+            <h4 class="pedagogy-title" style="color: #1F3F73;">💡 Lời Khuyên Của Huấn Luyện Viên ICPC</h4>
+            <p id="modal-coach-tip" style="font-size: 0.9rem; color: #24334A;"></p>
+          </div>
+
+          <div class="pitfalls-card">
+            <div class="pitfalls-title">
+              <span>⚠️</span> Các Cạm Bẫy Thường Gặp Khi Cài Đặt (Common Traps & Bugs)
+            </div>
+            <ul class="pitfalls-list" id="modal-pitfalls-list">
+              <!-- Rendered dynamically -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Tab 3: Template C++ chuẩn thi đấu -->
+        <div class="tab-pane" id="tab-template">
+          <div class="code-container">
+            <div class="code-header">
+              <span class="code-lang">C++17 / C++20 CP Template</span>
+              <button class="btn-copy-code" onclick="copyCppCode()" title="Sao chép toàn bộ mã nguồn">
+                <span>📋</span> Sao chép mã nguồn
+              </button>
+            </div>
+            <pre class="code-pre"><code id="modal-cpp-code"></code></pre>
+          </div>
+          <p style="font-size: 0.82rem; color: #5B6E87; margin-top: 10px;">
+            * Template đã bao gồm Fast I/O, thư viện tối ưu, quản lý chỉ số cẩn thận và chú thích từng khối logic sư phạm.
+          </p>
+        </div>
+
+        <!-- Tab 4: Luyện tập trên MarisaOJ -->
+        <div class="tab-pane" id="tab-practice">
+          <div style="margin-bottom: 18px;">
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: #1F3F73; margin-bottom: 6px;">
+              Danh Sách Bài Tập Thực Hành Đề Xuất
+            </h4>
+            <p style="font-size: 0.9rem; color: #5B6E87;">
+              Giải trực tiếp các bài tập được tuyển chọn trên nền tảng MarisaOJ để khắc sâu kiến thức:
+            </p>
+          </div>
+
+          <div class="practice-list" id="modal-practice-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <a id="modal-marisa-direct" href="https://marisaoj.com/roadmap" target="_blank" rel="noopener noreferrer" class="marisa-direct-link">
+          <span>Xem trọn bộ danh mục bài trên MarisaOJ</span> &rarr;
+        </a>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal()">
+          Đóng cửa sổ
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ========================================================================
+       8. SITE FOOTER
+       ======================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand-title">MarisaOJ ICPC Pedagogical Hub</div>
+          <p class="footer-brand-desc">
+            Website tương tác giáo dục được xây dựng nhằm hỗ trợ cộng đồng học sinh, sinh viên yêu thích lập trình giải thuật tại Việt Nam. Khung kiến thức bám sát cấu trúc của hệ thống trực tuyến <a href="https://marisaoj.com" target="_blank" rel="noopener" style="color: #60A5FA; text-decoration: underline;">MarisaOJ</a>.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Cấp Độ Lộ Trình</h4>
+          <ul class="footer-links">
+            <li><a href="#level-0">Level 0: Getting Started (Nhập môn)</a></li>
+            <li><a href="#level-1">Level 1: Simple Algorithms (Cơ bản)</a></li>
+            <li><a href="#level-2">Level 2: Still Simple, But Crucial</a></li>
+            <li><a href="#level-3">Level 3: Fundamental Knowledge</a></li>
+            <li><a href="#level-4">Level 4: Further Fundamentals</a></li>
+            <li><a href="#level-5">Level 5: Advanced Techniques</a></li>
+            <li><a href="#level-6">Level 6 & 100: Super Advanced & Arena</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Tài Nguyên Tham Khảo</h4>
+          <ul class="footer-links">
+            <li><a href="https://marisaoj.com/roadmap" target="_blank" rel="noopener">MarisaOJ Roadmap Chính Thức</a></li>
+            <li><a href="https://vnoi.info/wiki/Home" target="_blank" rel="noopener">VNOI Wiki Thuật Toán</a></li>
+            <li><a href="https://cp-algorithms.com" target="_blank" rel="noopener">CP-Algorithms Quốc Tế</a></li>
+            <li><a href="https://cses.fi/problemset/" target="_blank" rel="noopener">CSES Problem Set</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          &copy; 2026 MarisaOJ ICPC Roadmap. Phát triển bằng HTML5, CSS3 và Vanilla JavaScript thuần.
+        </div>
+        <div>
+          Bảng màu chuẩn sư phạm: #FFFFFF (Nền chính), #EEF2F7 (Nền phụ), #4A78C2 (Điểm nhấn), #1F3F73 (Tiêu đề).
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="visualizer.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
